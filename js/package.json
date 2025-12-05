@@ -1,0 +1,64 @@
+{
+  "name": "@usecross/docs",
+  "version": "0.1.0",
+  "description": "Documentation framework built on Cross-Inertia",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tailwind.preset": "./src/tailwind.preset.cjs"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "documentation",
+    "inertia",
+    "react",
+    "fastapi",
+    "ssr",
+    "cross-inertia"
+  ],
+  "author": "Patrick Arminio <patrick.arminio@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usecross/cross-docs.git",
+    "directory": "js"
+  },
+  "homepage": "https://cross-docs.dev",
+  "dependencies": {
+    "@inertiajs/react": "^2.0.0",
+    "clsx": "^2.1.1",
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
+    "shiki": "^1.24.0",
+    "tailwind-merge": "^2.6.0"
+  },
+  "peerDependencies": {
+    "@tailwindcss/typography": "^0.5.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.5.3"
+  }
+}
