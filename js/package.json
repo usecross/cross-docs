@@ -15,6 +15,7 @@
       "import": "./dist/ssr.js",
       "types": "./dist/ssr.d.ts"
     },
+    "./styles.css": "./src/styles.css",
     "./tailwind.preset": "./src/tailwind.preset.cjs"
   },
   "files": [

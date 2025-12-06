@@ -1,0 +1,128 @@
+/**
+ * Cross-Docs default styles
+ *
+ * Import this file in your app's CSS entry point:
+ * @import '@usecross/docs/styles.css';
+ *
+ * Then add Tailwind directives:
+ * @tailwind base;
+ * @tailwind components;
+ * @tailwind utilities;
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+
+@layer base {
+  :root {
+    /* Font stacks */
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+      sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+
+    /* Code highlighting - matches Starlight/Expressive Code dark theme */
+    --shiki-color-text: #e2e8f0;
+    --shiki-color-background: #24292f;
+    --shiki-token-constant: #7dd3fc;
+    --shiki-token-string: #86efac;
+    --shiki-token-comment: #64748b;
+    --shiki-token-keyword: #f472b6;
+    --shiki-token-parameter: #e2e8f0;
+    --shiki-token-function: #c4b5fd;
+    --shiki-token-string-expression: #86efac;
+    --shiki-token-punctuation: #94a3b8;
+    --shiki-token-link: #38bdf8;
+  }
+
+  html {
+    /* Note: scroll-behavior: smooth removed to prevent animated scroll on page refresh */
+  }
+
+  /* Only apply smooth scrolling when navigating to anchor links */
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    background: #ffffff;
+    color: #1f2937;
+  }
+
+  /* Headings use heading font */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  /* Monospace fonts for code */
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer components {
+  /* Prose content styles */
+  .prose {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  /* Scroll margin for headings (so they don't hide under fixed header) */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Code block styling - rounded corners like Starlight */
+  .prose pre {
+    @apply !bg-[#24292f] !p-0 overflow-hidden rounded-lg;
+  }
+
+  .prose pre code {
+    @apply !bg-transparent !p-4 block overflow-x-auto text-sm;
+  }
+
+  /* Inline code styling */
+  .prose :not(pre) > code {
+    @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-medium text-gray-800;
+  }
+
+  .prose :not(pre) > code::before,
+  .prose :not(pre) > code::after {
+    content: none;
+  }
+}
+
+/* Syntax highlighting - rounded corners like Starlight */
+.shiki {
+  @apply !bg-[#24292f] overflow-hidden rounded-lg;
+}
+
+.shiki code {
+  @apply block p-4 overflow-x-auto text-sm leading-relaxed;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}

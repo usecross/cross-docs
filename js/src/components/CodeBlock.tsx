@@ -38,7 +38,7 @@ export function CodeBlock({
   }
 
   return (
-    <div className={cn('group relative overflow-hidden bg-black border border-black not-prose', className)}>
+    <div className={cn('group relative overflow-hidden rounded-lg bg-[#24292f] not-prose', className)}>
       {filename && (
         <div className="flex items-center gap-2 border-b border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-400">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,13 +61,13 @@ export function CodeBlock({
       {html ? (
         <div
           className={cn(
-            'overflow-x-auto text-sm [&_pre]:!m-0 [&_code]:!p-4',
+            'overflow-x-auto text-sm [&_pre]:!m-0 [&_pre]:!bg-transparent [&_code]:!p-4',
             showLineNumbers && '[&_code]:grid [&_code]:grid-cols-[auto_1fr]'
           )}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <pre className="shiki overflow-x-auto !m-0 !bg-black">
+        <pre className="shiki overflow-x-auto !m-0 !bg-transparent">
           <code className="block p-4 text-sm leading-relaxed text-gray-300">{code.trim()}</code>
         </pre>
       )}

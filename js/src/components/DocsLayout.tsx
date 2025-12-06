@@ -45,28 +45,47 @@ export function DocsLayout({
   description: _description,
   logo,
   logoInverted,
-  githubUrl,
-  navLinks = [],
+  logoUrl: propLogoUrl,
+  logoInvertedUrl: propLogoInvertedUrl,
+  githubUrl: propGithubUrl,
+  navLinks: propNavLinks,
   footer,
 }: DocsLayoutProps) {
-  const { nav, currentPath } = usePage<{ props: SharedProps }>().props as unknown as SharedProps
+  const sharedProps = usePage<{ props: SharedProps }>().props as unknown as SharedProps
+  const { nav, currentPath } = sharedProps
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const displayLogo = logoInverted || logo
+  // Merge props - component props take precedence over shared props from Python
+  const logoUrl = propLogoUrl ?? sharedProps.logoUrl
+  const logoInvertedUrl = propLogoInvertedUrl ?? sharedProps.logoInvertedUrl
+  const githubUrl = propGithubUrl ?? sharedProps.githubUrl
+  const navLinks = propNavLinks ?? sharedProps.navLinks ?? []
+
+  // Determine which logo to display in header (prefer inverted/dark version)
+  const headerLogo = logoInverted || logo || (logoInvertedUrl ? (
+    <img src={logoInvertedUrl} alt="Logo" className="h-8" />
+  ) : logoUrl ? (
+    <img src={logoUrl} alt="Logo" className="h-8" />
+  ) : null)
+
+  // Determine which logo to display in footer (prefer regular version)
+  const footerLogo = logo || (logoUrl ? (
+    <img src={logoUrl} alt="Logo" className="h-8" />
+  ) : null)
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Head title={title} />
 
       {/* Fixed navigation */}
-      <nav className="fixed w-full z-50 bg-white border-b border-black">
+      <nav className="fixed w-full z-50 bg-white border-b border-gray-200">
         <div className="px-4 lg:px-10">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
               <MobileMenuButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)} isOpen={mobileMenuOpen} />
-              {displayLogo ? (
+              {headerLogo ? (
                 <Link href="/" className="flex items-center">
-                  {displayLogo}
+                  {headerLogo}
                 </Link>
               ) : (
                 <Link href="/" className="font-bold text-lg">
@@ -103,7 +122,7 @@ export function DocsLayout({
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-          <div className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white px-4 lg:px-10 py-6 pt-20 border-r border-black">
+          <div className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white px-4 lg:px-10 py-6 pt-20 border-r border-gray-200">
             <Sidebar nav={nav} currentPath={currentPath} />
           </div>
         </div>
@@ -113,7 +132,7 @@ export function DocsLayout({
       <div className="bg-white pt-16 w-full flex-1">
         <div className="grid grid-cols-12">
           {/* Desktop sidebar */}
-          <aside className="hidden lg:block lg:col-span-3 xl:col-span-2 border-r border-black min-h-[calc(100vh-4rem)]">
+          <aside className="hidden lg:block lg:col-span-3 xl:col-span-2 border-r border-gray-200 min-h-[calc(100vh-4rem)]">
             <nav className="sticky top-16 px-4 lg:px-10 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
               <Sidebar nav={nav} currentPath={currentPath} />
             </nav>
@@ -121,7 +140,7 @@ export function DocsLayout({
 
           {/* Main content */}
           <main className="col-span-12 lg:col-span-9 xl:col-span-10 p-4 lg:px-10 lg:py-6">
-            <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-4xl prose-h1:border-b-2 prose-h1:border-black prose-h1:pb-4 prose-h1:mb-8 prose-h2:text-2xl prose-h2:mt-12 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-500 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+            <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
               {children}
             </article>
           </main>
@@ -130,9 +149,9 @@ export function DocsLayout({
 
       {/* Footer */}
       {footer || (
-        <footer className="border-t border-black py-8">
+        <footer className="border-t border-gray-200 py-8">
           <div className="px-4 lg:px-10 flex flex-col md:flex-row justify-between items-center gap-6">
-            {logo && <Link href="/">{logo}</Link>}
+            {footerLogo && <Link href="/">{footerLogo}</Link>}
             <div className="flex gap-8 text-sm text-gray-600">
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href} className="hover:text-black transition-colors">

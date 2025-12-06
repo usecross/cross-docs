@@ -42,22 +42,29 @@ module.exports = {
           'Segoe UI Emoji',
           'Segoe UI Symbol',
         ],
+        heading: [
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif',
+        ],
         mono: ['Fira Code', 'Consolas', 'Monaco', 'Andale Mono', 'monospace'],
       },
       colors: {
-        // Default primary colors (can be overridden)
+        // Default primary colors - sky blue (can be overridden)
         primary: {
-          50: '#f4f7f3',
-          100: '#e6ece4',
-          200: '#cddac9',
-          300: '#a9c1a2',
-          400: '#7fa276',
-          500: '#648C57',
-          600: '#4d7043',
-          700: '#3e5937',
-          800: '#34482f',
-          900: '#2c3c28',
-          950: '#151f13',
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49',
         },
         // Dark colors for code blocks
         dark: {

@@ -1,14 +1,20 @@
 """Route factories for cross-docs."""
 
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
+from inertia.fastapi import InertiaDep
 
 from .markdown import load_markdown, load_raw_markdown
 from .middleware import wants_markdown
 from .navigation import generate_nav
+
+if TYPE_CHECKING:
+    from .config import DocsConfig
 
 
 def create_docs_router(
@@ -20,6 +26,10 @@ def create_docs_router(
     section_order: list[str] | None = None,
     enable_markdown_response: bool = True,
     render_with_ssr: Callable[..., Any] | None = None,
+    logo_url: str | None = None,
+    logo_inverted_url: str | None = None,
+    github_url: str | None = None,
+    nav_links: list[dict[str, str]] | None = None,
 ) -> APIRouter:
     """Create a FastAPI router for documentation pages.
 
@@ -38,12 +48,14 @@ def create_docs_router(
         section_order: List of section names in desired order
         enable_markdown_response: Enable raw markdown for Accept: text/markdown
         render_with_ssr: Optional SSR render function for server-side rendering
+        logo_url: URL for the site logo (SVG recommended)
+        logo_inverted_url: URL for inverted/dark logo variant
+        github_url: GitHub repository URL (shows GitHub icon in nav)
+        nav_links: Additional navigation links [{"label": "...", "href": "..."}]
 
     Returns:
         FastAPI APIRouter with docs routes configured
     """
-    from inertia.fastapi import InertiaDep
-
     router = APIRouter(prefix=prefix, tags=["docs"])
     docs_dir = content_dir / "docs"
 
@@ -57,10 +69,19 @@ def create_docs_router(
 
     def share_data(request: Request) -> dict:
         """Shared data available on all pages."""
-        return {
+        data: dict[str, Any] = {
             "nav": nav,
             "currentPath": str(request.url.path),
         }
+        if logo_url:
+            data["logoUrl"] = logo_url
+        if logo_inverted_url:
+            data["logoInvertedUrl"] = logo_inverted_url
+        if github_url:
+            data["githubUrl"] = github_url
+        if nav_links:
+            data["navLinks"] = nav_links
+        return data
 
     async def render_page(
         request: Request,
@@ -197,3 +218,52 @@ def create_docs_handler(
         )
 
     return handle_docs_page
+
+
+def create_docs_router_from_config(
+    config: DocsConfig | None = None,
+    *,
+    render_with_ssr: Callable[..., Any] | None = None,
+) -> APIRouter:
+    """Create a FastAPI router from DocsConfig.
+
+    This is the simplest way to add docs using pyproject.toml config:
+
+        from cross_docs import create_docs_router_from_config, load_config
+
+        config = load_config()
+        router = create_docs_router_from_config(config)
+        app.include_router(router)
+
+    Or even simpler (auto-loads from pyproject.toml):
+
+        from cross_docs import create_docs_router_from_config
+
+        router = create_docs_router_from_config()
+        app.include_router(router)
+
+    Args:
+        config: DocsConfig instance. If None, loads from pyproject.toml.
+        render_with_ssr: Optional SSR render function for server-side rendering.
+
+    Returns:
+        FastAPI APIRouter with docs routes configured.
+    """
+    from .config import load_config
+
+    if config is None:
+        config = load_config()
+
+    return create_docs_router(
+        config.content_dir,
+        component=config.component,
+        prefix=config.prefix,
+        index_page=config.index_page,
+        section_order=config.section_order,
+        enable_markdown_response=config.enable_markdown_response,
+        render_with_ssr=render_with_ssr,
+        logo_url=config.logo_url,
+        logo_inverted_url=config.logo_inverted_url,
+        github_url=config.github_url,
+        nav_links=config.nav_links,
+    )

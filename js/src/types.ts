@@ -20,6 +20,14 @@ export interface NavSection {
 export interface SharedProps {
   nav: NavSection[]
   currentPath: string
+  /** Logo image URL (from Python backend) */
+  logoUrl?: string
+  /** Logo image URL for dark/inverted contexts (from Python backend) */
+  logoInvertedUrl?: string
+  /** GitHub repository URL (from Python backend) */
+  githubUrl?: string
+  /** Additional navigation links (from Python backend) */
+  navLinks?: Array<{ label: string; href: string }>
 }
 
 /** Document content structure */
@@ -34,10 +42,14 @@ export interface DocsLayoutProps {
   children: ReactNode
   title: string
   description?: string
-  /** Custom logo component */
+  /** Custom logo component (React node) */
   logo?: ReactNode
-  /** Custom logo for dark/inverted contexts */
+  /** Custom logo for dark/inverted contexts (React node) */
   logoInverted?: ReactNode
+  /** Logo image URL (alternative to logo prop, can be passed from backend) */
+  logoUrl?: string
+  /** Logo image URL for dark/inverted contexts */
+  logoInvertedUrl?: string
   /** GitHub repository URL (shows GitHub icon in nav) */
   githubUrl?: string
   /** Additional navigation links */
