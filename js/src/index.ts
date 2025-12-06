@@ -8,9 +8,8 @@ export {
   Sidebar,
 } from './components'
 
-// App factories
+// App factory (client-side only)
 export { createDocsApp } from './app'
-export { createDocsServer } from './ssr'
 
 // Utilities
 export { cn } from './lib/utils'

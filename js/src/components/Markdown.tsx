@@ -13,6 +13,10 @@ export function Markdown({ content, components }: MarkdownProps) {
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       components={{
+        // Override pre to avoid double wrapping with CodeBlock
+        pre({ children }) {
+          return <>{children}</>
+        },
         // Custom code block rendering with syntax highlighting
         code({ node, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '')

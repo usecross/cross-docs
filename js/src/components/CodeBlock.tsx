@@ -38,7 +38,7 @@ export function CodeBlock({
   }
 
   return (
-    <div className={cn('group relative overflow-hidden bg-black border border-black', className)}>
+    <div className={cn('group relative overflow-hidden bg-black border border-black not-prose', className)}>
       {filename && (
         <div className="flex items-center gap-2 border-b border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-400">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

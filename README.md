@@ -36,29 +36,16 @@ npm install @usecross/docs
 
 ```python
 from pathlib import Path
-from fastapi import FastAPI, Request
-from cross_docs import (
-    generate_nav,
-    create_docs_handler,
-    strip_trailing_slash_middleware,
-)
-from inertia.fastapi import InertiaMiddleware, InertiaDep
+from fastapi import FastAPI
+from cross_docs import create_docs_router, strip_trailing_slash_middleware
+from inertia.fastapi import InertiaMiddleware
 
 app = FastAPI()
+app.add_middleware(InertiaMiddleware)
 app.middleware("http")(strip_trailing_slash_middleware)
 
-CONTENT_DIR = Path("content")
-NAV = generate_nav(CONTENT_DIR / "docs")
-
-docs_handler = create_docs_handler(CONTENT_DIR, NAV)
-
-@app.get("/docs")
-async def docs_index(request: Request, inertia: InertiaDep):
-    return await docs_handler(request, inertia)
-
-@app.get("/docs/{path:path}")
-async def docs_page(path: str, request: Request, inertia: InertiaDep):
-    return await docs_handler(request, inertia, path=path)
+# Add docs routes - that's it!
+app.include_router(create_docs_router(Path("content")))
 ```
 
 ### 3. Create your frontend
@@ -166,13 +153,14 @@ function FullyCustomPage({ content }) {
 
 ### Python (`cross-docs`)
 
+- `create_docs_router(content_dir, ...)` - Create a FastAPI router with docs routes
+- `create_docs_handler(...)` - Create a docs route handler (for more control)
 - `parse_frontmatter(content)` - Parse YAML frontmatter from markdown
 - `load_markdown(content_dir, path)` - Load and parse a markdown file
 - `load_raw_markdown(content_dir, path)` - Load raw markdown content
 - `generate_nav(docs_dir, ...)` - Generate navigation from file structure
 - `strip_trailing_slash_middleware` - Redirect trailing slashes
 - `wants_markdown(request)` - Check if request wants markdown (for AI tools)
-- `create_docs_handler(...)` - Create a docs route handler
 
 ### JavaScript (`@usecross/docs`)
 

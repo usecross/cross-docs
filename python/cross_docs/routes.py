@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any, Callable
 
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
 
 from .markdown import load_markdown, load_raw_markdown
@@ -11,39 +11,46 @@ from .middleware import wants_markdown
 from .navigation import generate_nav
 
 
-def create_docs_routes(
-    app: FastAPI,
+def create_docs_router(
     content_dir: Path,
     *,
     component: str = "docs/DocsPage",
-    base_path: str = "/docs",
+    prefix: str = "/docs",
     index_page: str = "introduction",
     section_order: list[str] | None = None,
     enable_markdown_response: bool = True,
-    render_func: Callable[[Request, str, dict, dict | None], Any] | None = None,
-) -> list[dict]:
-    """Add documentation routes to a FastAPI app.
+    render_with_ssr: Callable[..., Any] | None = None,
+) -> APIRouter:
+    """Create a FastAPI router for documentation pages.
 
-    Creates routes for serving markdown documentation with Inertia.js.
-    Generates navigation from markdown file structure.
+    This is the simplest way to add docs to your FastAPI app:
+
+        from cross_docs import create_docs_router
+
+        router = create_docs_router(Path("content"))
+        app.include_router(router)
 
     Args:
-        app: FastAPI application
         content_dir: Base directory for content (should have docs/ subdirectory)
         component: Inertia component name for rendering docs
-        base_path: URL base path for docs
+        prefix: URL prefix for docs routes (default: "/docs")
         index_page: Name of the index page file (without .md)
         section_order: List of section names in desired order
         enable_markdown_response: Enable raw markdown for Accept: text/markdown
-        render_func: Custom render function (receives request, component, props, view_data)
+        render_with_ssr: Optional SSR render function for server-side rendering
 
     Returns:
-        Generated navigation structure
+        FastAPI APIRouter with docs routes configured
     """
+    from inertia.fastapi import InertiaDep
+
+    router = APIRouter(prefix=prefix, tags=["docs"])
     docs_dir = content_dir / "docs"
+
+    # Generate navigation from file structure
     nav = generate_nav(
         docs_dir,
-        base_path=base_path,
+        base_path=prefix,
         section_order=section_order,
         index_page=index_page,
     )
@@ -57,40 +64,51 @@ def create_docs_routes(
 
     async def render_page(
         request: Request,
-        content: dict,
-        inertia: Any,
+        inertia: InertiaDep,
+        doc_path: str,
     ):
-        """Render a docs page with Inertia."""
+        """Render a docs page."""
+        # Return raw markdown if requested
+        if enable_markdown_response and wants_markdown(request):
+            return PlainTextResponse(
+                load_raw_markdown(content_dir, doc_path),
+                media_type="text/markdown",
+            )
+
+        content = load_markdown(content_dir, doc_path)
         props = {
             "content": content,
             **share_data(request),
         }
-        if render_func:
-            return await render_func(
+
+        if render_with_ssr:
+            return await render_with_ssr(
                 request,
                 component,
                 props,
-                {"page_title": content["title"]},
+                view_data={"page_title": content["title"]},
             )
+
         return inertia.render(
             component,
-            {"content": content},
+            props,
             view_data={"page_title": content["title"]},
         )
 
-    @app.get(base_path)
-    async def docs_index(request: Request):
-        from inertia.fastapi import InertiaDep
-        from fastapi import Depends
+    @router.get("")
+    async def docs_index(request: Request, inertia: InertiaDep):
+        """Serve the docs index page."""
+        return await render_page(request, inertia, f"docs/{index_page}")
 
-        # This is a workaround - we need to get inertia from the request
-        # In practice, users should use this as a reference implementation
-        pass
+    @router.get("/{path:path}")
+    async def docs_page(path: str, request: Request, inertia: InertiaDep):
+        """Serve a docs page by path."""
+        return await render_page(request, inertia, f"docs/{path}")
 
-    # We need to use a different approach - let's create route handlers
-    # that can be registered by the user
+    # Attach nav to router for external access if needed
+    router.nav = nav  # type: ignore
 
-    return nav
+    return router
 
 
 def create_docs_handler(
@@ -104,6 +122,19 @@ def create_docs_handler(
 ):
     """Create a docs page handler function.
 
+    Use this for more control over route registration:
+
+        nav = generate_nav(content_dir / "docs")
+        handler = create_docs_handler(content_dir, nav)
+
+        @app.get("/docs")
+        async def docs_index(request: Request, inertia: InertiaDep):
+            return await handler(request, inertia)
+
+        @app.get("/docs/{path:path}")
+        async def docs_page(path: str, request: Request, inertia: InertiaDep):
+            return await handler(request, inertia, path=path)
+
     Args:
         content_dir: Base directory for content
         nav: Navigation structure (from generate_nav)
@@ -115,7 +146,6 @@ def create_docs_handler(
     Returns:
         Async handler function for docs routes
     """
-    docs_dir = content_dir / "docs"
 
     def share_data(request: Request) -> dict:
         return {
@@ -162,7 +192,7 @@ def create_docs_handler(
 
         return inertia.render(
             component,
-            {"content": content},
+            props,
             view_data={"page_title": content["title"]},
         )
 
