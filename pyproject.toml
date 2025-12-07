@@ -5,14 +5,10 @@ description = "Cross-docs monorepo (not published)"
 
 [tool.autopub]
 plugins = [
-    "autopub.plugins.github",
-    "autopub_bun:UvMonorepoPlugin",
-    "autopub_bun:BunPlugin",
+    "autopub_bun:CrossDocsPlugin",
 ]
 
-[tool.autopub.plugin_config.uv_monorepo]
-package_path = "python"
-
-[tool.autopub.plugin_config.bun]
-package_path = "js"
+[tool.autopub.plugin_config.cross_docs]
+python_path = "python"
+js_path = "js"
 build_command = "build"
