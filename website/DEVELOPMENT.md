@@ -65,6 +65,10 @@ The `js/package.json` uses conditional exports to support both development and p
 
 This eliminates the trade-off between dev experience and npm publishing - both work automatically.
 
+**References:**
+- [Node.js Conditional Exports Documentation](https://nodejs.org/api/packages.html#conditional-exports)
+- [Webpack Package Exports Guide](https://webpack.js.org/guides/package-exports/)
+
 ## Issues Encountered & Solutions
 
 ### 1. Workspace Resolution
