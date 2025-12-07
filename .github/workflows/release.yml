@@ -105,12 +105,14 @@ jobs:
         run: |
           cd js && bun install && bun run build
 
-      # Publish packages
+      # Publish packages (continue-on-error handles already-published versions)
       - name: Publish Python to PyPI
+        continue-on-error: true
         run: |
           cd python && uv publish --trusted-publishing always
 
       - name: Publish JS to npm
+        continue-on-error: true
         run: |
           cd js && npm publish --provenance
         env:
