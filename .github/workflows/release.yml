@@ -1,0 +1,165 @@
+name: AutoPub Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check-release:
+    name: Check for release
+    runs-on: ubuntu-latest
+    outputs:
+      has_release: ${{ steps.check.outputs.has_release }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Check for release
+        id: check
+        run: |
+          if uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic autopub check; then
+            echo "has_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_release=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Verify .autopub directory
+        if: steps.check.outputs.has_release == 'true'
+        run: |
+          if [ -d ".autopub" ]; then
+            echo "Found .autopub directory"
+          else
+            echo "No .autopub directory found"
+            exit 1
+          fi
+
+      - name: Upload .autopub artifact
+        if: steps.check.outputs.has_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+          include-hidden-files: true
+
+  publish-python:
+    name: Publish Python to PyPI
+    needs: check-release
+    if: ${{ github.ref == 'refs/heads/main' && needs.check-release.outputs.has_release == 'true' }}
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Download .autopub artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+
+      - name: Prepare release
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic autopub prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Build Python package
+        run: |
+          cd python && uv build
+
+      - name: Publish to PyPI
+        run: |
+          cd python && uv publish --trusted-publishing always
+
+  publish-npm:
+    name: Publish JS to npm
+    needs: check-release
+    if: ${{ github.ref == 'refs/heads/main' && needs.check-release.outputs.has_release == 'true' }}
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Download .autopub artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+
+      - name: Prepare release
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic autopub prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Setup Node.js for npm trusted publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build JS package
+        run: |
+          cd js && bun install && bun run build
+
+      - name: Publish to npm (trusted publishing)
+        run: |
+          cd js && npm publish --access public
+
+  create-github-release:
+    name: Create GitHub Release
+    needs: [check-release, publish-python, publish-npm]
+    if: ${{ github.ref == 'refs/heads/main' && needs.check-release.outputs.has_release == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Download .autopub artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+
+      - name: Create GitHub release
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic autopub publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
