@@ -1,0 +1,39 @@
+# Cross-Docs Website Development
+
+# Default recipe - show available commands
+default:
+    @just --list
+
+# Install all dependencies (from workspace root)
+install:
+    uv sync
+    cd .. && bun install
+
+# Kill any running dev servers
+kill:
+    -pkill -f "vite" || true
+    -pkill -f "uvicorn.*app:app" || true
+
+# Run the frontend dev server
+frontend:
+    bun run dev
+
+# Run the backend dev server
+backend:
+    uv run python app.py
+
+# Run both frontend and backend in parallel
+dev: kill
+    just frontend & just backend
+
+# Build the frontend for production
+build:
+    bun run build
+
+# Clean build artifacts
+clean: kill
+    rm -rf frontend/dist node_modules .venv __pycache__ ../node_modules
+
+# Setup everything from scratch
+setup: install
+    @echo "Ready! Run 'just dev' to start developing."

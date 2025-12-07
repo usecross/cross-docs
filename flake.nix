@@ -14,14 +14,15 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            python3
+            python314
             uv
             bun
+            just
           ];
 
           shellHook = ''
             echo "cross-docs development environment"
-            echo "Python: $(python3 --version)"
+            echo "Python: $(python3.14 --version)"
             echo "uv: $(uv --version)"
             echo "Bun: $(bun --version)"
           '';
