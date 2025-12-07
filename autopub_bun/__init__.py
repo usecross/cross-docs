@@ -76,9 +76,22 @@ class BunPlugin(AutopubPlugin, AutopubPackageManagerPlugin):
 
         self._update_version(release_info.version)
 
-        # Regenerate bun.lock after version bump
+        # Regenerate bun.lock after version bump (only if bun is available)
         cwd = pathlib.Path(self.config.package_path).resolve()
-        subprocess.run(["bun", "install"], check=True, cwd=cwd)
+        if self._is_bun_available():
+            subprocess.run(["bun", "install"], check=True, cwd=cwd)
+
+    def _is_bun_available(self) -> bool:
+        """Check if bun is available in PATH."""
+        try:
+            subprocess.run(
+                ["bun", "--version"],
+                check=True,
+                capture_output=True,
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
 
     def build(self) -> None:
         """Build the package using Bun."""
@@ -217,9 +230,22 @@ class UvMonorepoPlugin(AutopubPlugin, AutopubPackageManagerPlugin):
         # Update __version__ in __init__.py if it exists
         self._update_init_version(release_info.version)
 
-        # Regenerate uv.lock after version bump
+        # Regenerate uv.lock after version bump (only if uv is available)
         cwd = pathlib.Path(self.config.package_path).resolve()
-        subprocess.run(["uv", "lock"], check=True, cwd=cwd)
+        if self._is_uv_available():
+            subprocess.run(["uv", "lock"], check=True, cwd=cwd)
+
+    def _is_uv_available(self) -> bool:
+        """Check if uv is available in PATH."""
+        try:
+            subprocess.run(
+                ["uv", "--version"],
+                check=True,
+                capture_output=True,
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
 
     def build(self) -> None:
         """Build the package using uv."""
