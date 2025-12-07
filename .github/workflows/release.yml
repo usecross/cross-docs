@@ -38,16 +38,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONPATH: ${{ github.workspace }}
 
-      - name: Verify .autopub directory
-        if: steps.check.outputs.has_release == 'true'
-        run: |
-          if [ -d ".autopub" ]; then
-            echo "Found .autopub directory"
-          else
-            echo "No .autopub directory found"
-            exit 1
-          fi
-
       - name: Upload .autopub artifact
         if: steps.check.outputs.has_release == 'true'
         uses: actions/upload-artifact@v4
@@ -65,8 +55,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-      issues: write
-      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -77,7 +65,7 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Setup Node.js for npm trusted publishing
+      - name: Setup Node.js for npm OIDC
         uses: actions/setup-node@v4
         with:
           node-version: "24"
@@ -96,33 +84,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONPATH: ${{ github.workspace }}
 
-      # Build packages
-      - name: Build Python package
+      - name: Build packages
         run: |
-          cd python && uv build
-
-      - name: Build JS package
-        run: |
-          cd js && bun install && bun run build
-
-      # Publish packages
-      - name: Publish Python to PyPI
-        id: pypi
-        continue-on-error: true
-        run: |
-          cd python && uv publish --trusted-publishing always
-
-      - name: Publish JS to npm
-        id: npm
-        continue-on-error: true
-        run: |
-          cd js && npm publish --provenance
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub build
         env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Publish packages
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub publish
+        env:
+          PYTHONPATH: ${{ github.workspace }}
           NPM_CONFIG_PROVENANCE: true
 
-      # Create GitHub release only if at least one publish succeeded
       - name: Create GitHub Release
-        if: steps.pypi.outcome == 'success' || steps.npm.outcome == 'success'
         run: |
           VERSION=$(jq -r '.version' .autopub/release_info.json)
           NOTES=$(jq -r '.release_notes' .autopub/release_info.json)
@@ -136,9 +111,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Commit version bumps and remove RELEASE.md
       - name: Commit version updates
-        if: steps.pypi.outcome == 'success' || steps.npm.outcome == 'success'
         run: |
           VERSION=$(jq -r '.version' .autopub/release_info.json)
           git config user.name "github-actions[bot]"
@@ -148,10 +121,3 @@ jobs:
           git add RELEASE.md
           git commit -m "chore: Bump version to ${VERSION} [skip ci]" || echo "No changes to commit"
           git push
-
-      # Fail the workflow if both publishes failed
-      - name: Check publish results
-        if: steps.pypi.outcome == 'failure' && steps.npm.outcome == 'failure'
-        run: |
-          echo "Both PyPI and npm publish failed!"
-          exit 1
