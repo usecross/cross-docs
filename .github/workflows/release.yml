@@ -105,26 +105,40 @@ jobs:
         run: |
           cd js && bun install && bun run build
 
-      # Publish packages (continue-on-error handles already-published versions)
+      # Publish packages
       - name: Publish Python to PyPI
+        id: pypi
         continue-on-error: true
         run: |
           cd python && uv publish --trusted-publishing always
 
       - name: Publish JS to npm
+        id: npm
         continue-on-error: true
         run: |
           cd js && npm publish --provenance
         env:
           NPM_CONFIG_PROVENANCE: true
 
-      # Create GitHub release
+      # Create GitHub release only if at least one publish succeeded
       - name: Create GitHub Release
+        if: steps.pypi.outcome == 'success' || steps.npm.outcome == 'success'
         run: |
           VERSION=$(jq -r '.version' .autopub/release_info.json)
           NOTES=$(jq -r '.release_notes' .autopub/release_info.json)
-          gh release create "v${VERSION}" \
-            --title "v${VERSION}" \
-            --notes "${NOTES}"
+          if gh release view "v${VERSION}" > /dev/null 2>&1; then
+            echo "Release v${VERSION} already exists, skipping"
+          else
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes "${NOTES}"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Fail the workflow if both publishes failed
+      - name: Check publish results
+        if: steps.pypi.outcome == 'failure' && steps.npm.outcome == 'failure'
+        run: |
+          echo "Both PyPI and npm publish failed!"
+          exit 1
