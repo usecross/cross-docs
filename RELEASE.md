@@ -1,9 +1,6 @@
-Release type: minor
+Release type: patch
 
-Initial release with documentation framework.
+Fix npm package build by including missing lib files.
 
-- Add documentation components (DocsLayout, DocsPage, CodeBlock, Markdown)
-- Add homepage components (HomePage, HomeHero, HomeFeatures)
-- Add SSR support for Cross-Inertia
-- Add Tailwind preset for documentation styling
-- Add autopub release automation
+- Fix .gitignore to not exclude js/src/lib directory
+- Add missing shiki.ts and utils.ts utility files
