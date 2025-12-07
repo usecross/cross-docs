@@ -119,14 +119,14 @@ def create_docs_router(
             view_data={"page_title": content["title"]},
         )
 
-    @router.get("")
-    async def docs_index(request: Request, inertia: InertiaDep):
-        """Serve the docs index page."""
-        return await render_page(request, inertia, f"docs/{index_page}")
-
     @router.get("/{path:path}")
     async def docs_page(path: str, request: Request, inertia: InertiaDep):
         """Serve a docs page by path."""
+        # Strip trailing slash from path for file lookup
+        path = path.rstrip("/")
+        # Empty path means index page
+        if not path:
+            path = index_page
         return await render_page(request, inertia, f"docs/{path}")
 
     # Attach nav to router for external access if needed
