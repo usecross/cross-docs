@@ -35,27 +35,35 @@ We use a bun workspace at the monorepo root to link `@usecross/docs`:
 
 This allows the website to use `"@usecross/docs": "workspace:*"` and have bun handle the linking.
 
-### Source vs Built Exports
+### Conditional Exports (Development vs Production)
 
-The `js/package.json` exports source files directly (not built dist):
+The `js/package.json` uses conditional exports to support both development and production:
 
 ```json
 {
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
     }
   }
 }
 ```
 
-**Why?** This enables:
-- Hot reload during development (edit js/src, see changes immediately)
-- No build step required to run the website
-- Simpler development workflow
+**How it works:**
 
-**Trade-off:** For publishing to npm, you'd want to change exports back to `./dist/` and build first.
+| Environment | Resolves to | Build required? |
+|-------------|-------------|-----------------|
+| Vite dev server | `src/*.ts` | No |
+| npm consumers | `dist/*.js` | Yes |
+
+- **Development**: Vite and other modern bundlers support the `development` condition, resolving imports to source files for hot reload
+- **Production**: The `default` condition kicks in, using built `dist/` files
+
+This eliminates the trade-off between dev experience and npm publishing - both work automatically.
 
 ## Issues Encountered & Solutions
 
@@ -145,7 +153,7 @@ Based on this experience, here are suggestions for improving cross-docs:
 
 2. **Document shiki themes** - Make it clear which themes are loaded by default and how to configure them.
 
-3. **Consider bundling for npm** - For published package, consider whether to ship source or built files. Source is great for monorepo dev, but built might be better for npm consumers.
+3. ~~**Consider bundling for npm**~~ - ✅ Resolved! Now using conditional exports with `development` condition for source files and `default` for built dist files.
 
 ### For cross-docs (Python)
 
