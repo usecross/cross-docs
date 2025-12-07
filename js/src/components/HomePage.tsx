@@ -19,6 +19,7 @@ export interface HomePageContextValue {
   ctaHref: string
   features: HomeFeature[]
   logoUrl?: string
+  heroLogoUrl?: string
   footerLogoUrl?: string
   githubUrl?: string
   navLinks: Array<{ label: string; href: string }>
@@ -165,9 +166,10 @@ export function HomeHeader() {
 
 /**
  * Hero section with title, tagline, description, and CTA.
+ * If heroLogoUrl is provided, displays an image instead of text title.
  */
 export function HomeHero() {
-  const { title, tagline, description, ctaText, ctaHref, installCommand } = useHomePage()
+  const { title, tagline, description, ctaText, ctaHref, installCommand, heroLogoUrl } = useHomePage()
 
   return (
     <section className="pt-16">
@@ -176,9 +178,19 @@ export function HomeHero() {
           <div className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-500">
             {tagline}
           </div>
-          <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6">
-            {title}
-          </h1>
+          {heroLogoUrl ? (
+            <h1 className="mb-6 lg:mb-8">
+              <img
+                src={heroLogoUrl}
+                alt={title}
+                className="h-auto w-auto max-w-[580px]"
+              />
+            </h1>
+          ) : (
+            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6">
+              {title}
+            </h1>
+          )}
           <p className="text-xl lg:text-2xl text-gray-700 max-w-2xl leading-relaxed mb-8">
             {description}
           </p>
