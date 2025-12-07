@@ -1,6 +1,8 @@
----
-release type: patch
----
+CHANGELOG
+=========
+
+0.2.6 - 2025-12-07
+------------------
 
 Test autopub publish with git plugin
 
