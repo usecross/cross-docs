@@ -24,6 +24,8 @@ export interface SharedProps {
   logoUrl?: string
   /** Logo image URL for dark/inverted contexts (from Python backend) */
   logoInvertedUrl?: string
+  /** Footer logo image URL (from Python backend) */
+  footerLogoUrl?: string
   /** GitHub repository URL (from Python backend) */
   githubUrl?: string
   /** Additional navigation links (from Python backend) */

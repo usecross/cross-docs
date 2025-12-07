@@ -16,16 +16,18 @@ Set up a FastAPI application with Cross-Docs:
 ```python
 from pathlib import Path
 from fastapi import FastAPI
-from cross_docs import create_docs_router, strip_trailing_slash_middleware
+from cross_docs import create_docs_router
 from inertia.fastapi import InertiaMiddleware
 
-app = FastAPI()
+# Use docs_url to avoid conflict with cross-docs at /docs
+app = FastAPI(docs_url="/api/docs", redoc_url="/api/redoc")
 app.add_middleware(InertiaMiddleware)
-app.middleware("http")(strip_trailing_slash_middleware)
 
 # Add docs routes - that's it!
 app.include_router(create_docs_router(Path("content")))
 ```
+
+> **Note:** FastAPI's built-in Swagger UI defaults to `/docs`, which conflicts with cross-docs. Setting `docs_url="/api/docs"` moves it to `/api/docs` instead.
 
 ## 2. Create your frontend
 

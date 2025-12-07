@@ -19,3 +19,29 @@ dev = [
 
 [tool.uv.sources]
 cross-docs = { path = "../python", editable = true }
+
+[tool.cross-docs]
+content_dir = "content"
+prefix = "/docs"
+index_page = "introduction"
+section_order = ["Getting Started", "Guide", "API Reference"]
+logo_url = "/static/logo.svg"
+footer_logo_url = "/static/logo-extended.svg"
+github_url = "https://github.com/usecross/cross-docs"
+
+[[tool.cross-docs.nav_links]]
+label = "Docs"
+href = "/docs/"
+
+[[tool.cross-docs.nav_links]]
+label = "GitHub"
+href = "https://github.com/usecross/cross-docs"
+
+[tool.cross-docs.home]
+enabled = true
+title = "Cross-Docs"
+tagline = "Documentation Framework"
+description = "Build beautiful documentation sites with Python and React. Powered by FastAPI, Inertia.js, and Shiki syntax highlighting."
+install_command = "uv add cross-docs"
+cta_text = "Get Started"
+cta_href = "/docs/"

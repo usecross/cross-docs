@@ -2,11 +2,14 @@
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from inertia.fastapi import InertiaMiddleware, InertiaResponse, get_inertia_response
+from inertia.fastapi import InertiaMiddleware, InertiaDep, get_inertia_response
 
-from cross_docs import create_docs_router, strip_trailing_slash_middleware
+from cross_docs import create_docs_router_from_config, create_home_route, load_config
+
+# Load config from pyproject.toml
+config = load_config()
 
 # Configure Inertia before creating the app
 _response = get_inertia_response()
@@ -17,38 +20,26 @@ _response.vite_entry = "app.tsx"
 app = FastAPI(title="Cross-Docs", docs_url="/api/docs", redoc_url="/api/redoc")
 
 # Inertia middleware
-app.add_middleware(InertiaMiddleware, share=lambda request: {})
-
-# Strip trailing slashes
-app.middleware("http")(strip_trailing_slash_middleware)
+app.add_middleware(InertiaMiddleware)
 
 # Serve static files
 static_dir = Path(__file__).parent / "frontend" / "dist"
 if static_dir.exists():
     app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
 
-# Documentation routes
-content_dir = Path(__file__).parent / "content"
-docs_router = create_docs_router(
-    content_dir,
-    prefix="/docs",
-    index_page="introduction",
-    section_order=["Getting Started", "Guide", "API Reference"],
-    github_url="https://github.com/usecross/cross-docs",
-    nav_links=[
-        {"label": "Docs", "href": "/docs"},
-        {"label": "GitHub", "href": "https://github.com/usecross/cross-docs"},
-    ],
-)
+# Documentation routes (loaded from pyproject.toml config)
+docs_router = create_docs_router_from_config(config)
 app.include_router(docs_router)
+
+# Home page route
+home_handler = create_home_route(config)
 
 
 @app.get("/")
-async def home():
-    """Redirect to docs."""
-    from fastapi.responses import RedirectResponse
-
-    return RedirectResponse(url="/docs")
+async def home(request: Request, inertia: InertiaDep):
+    """Render the homepage."""
+    return await home_handler(request, inertia)
 
 
 if __name__ == "__main__":
