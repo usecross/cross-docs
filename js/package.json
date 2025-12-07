@@ -1,6 +1,6 @@
 {
   "name": "@usecross/docs",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Documentation framework built on Cross-Inertia",
   "type": "module",
   "main": "./dist/index.js",
