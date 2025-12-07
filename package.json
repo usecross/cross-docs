@@ -1,0 +1,5 @@
+{
+  "name": "cross-docs-monorepo",
+  "private": true,
+  "workspaces": ["js", "website"]
+}

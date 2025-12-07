@@ -68,9 +68,10 @@ export function DocsLayout({
     <img src={logoUrl} alt="Logo" className="h-8" />
   ) : null)
 
-  // Determine which logo to display in footer (prefer regular version)
-  const footerLogo = logo || (logoUrl ? (
-    <img src={logoUrl} alt="Logo" className="h-8" />
+  // Determine which logo to display in footer (prefer footer-specific logo)
+  const footerLogoUrl = sharedProps.footerLogoUrl || logoUrl
+  const footerLogo = logo || (footerLogoUrl ? (
+    <img src={footerLogoUrl} alt="Logo" className="h-6" />
   ) : null)
 
   return (

@@ -3,10 +3,21 @@ export {
   CodeBlock,
   DocsLayout,
   DocsPage,
+  HomePage,
   InlineCode,
   Markdown,
   Sidebar,
 } from './components'
+
+// HomePage sub-components (for compound component pattern)
+export {
+  HomeHeader,
+  HomeHero,
+  HomeFeatures,
+  HomeFeatureItem,
+  HomeCTA,
+  HomeFooter,
+} from './components/HomePage'
 
 // App factory (client-side only)
 export { createDocsApp } from './app'
@@ -27,3 +38,12 @@ export type {
   SharedProps,
   SidebarProps,
 } from './types'
+
+export type {
+  HomePageProps,
+  HomePageContextValue,
+  HomeHeaderProps,
+  HomeFeaturesProps,
+  HomeFeatureItemProps,
+  HomeFeature,
+} from './components/HomePage'

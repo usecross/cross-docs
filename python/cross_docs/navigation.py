@@ -44,11 +44,11 @@ def generate_nav(
         href_parts = list(rel_path.parts)
         href_parts[-1] = href_parts[-1].replace(".md", "")
 
-        # index_page.md -> base_path, others -> base_path/<path>
+        # index_page.md -> base_path/, others -> base_path/<path>/
         if href_parts == [index_page]:
-            href = base_path
+            href = f"{base_path}/"
         else:
-            href = f"{base_path}/" + "/".join(href_parts)
+            href = f"{base_path}/" + "/".join(href_parts) + "/"
 
         if section not in sections:
             sections[section] = []

@@ -28,6 +28,7 @@ def create_docs_router(
     render_with_ssr: Callable[..., Any] | None = None,
     logo_url: str | None = None,
     logo_inverted_url: str | None = None,
+    footer_logo_url: str | None = None,
     github_url: str | None = None,
     nav_links: list[dict[str, str]] | None = None,
 ) -> APIRouter:
@@ -50,6 +51,7 @@ def create_docs_router(
         render_with_ssr: Optional SSR render function for server-side rendering
         logo_url: URL for the site logo (SVG recommended)
         logo_inverted_url: URL for inverted/dark logo variant
+        footer_logo_url: URL for the footer logo (extended/full version)
         github_url: GitHub repository URL (shows GitHub icon in nav)
         nav_links: Additional navigation links [{"label": "...", "href": "..."}]
 
@@ -77,6 +79,7 @@ def create_docs_router(
             data["logoUrl"] = logo_url
         if logo_inverted_url:
             data["logoInvertedUrl"] = logo_inverted_url
+        data["footerLogoUrl"] = footer_logo_url or logo_url
         if github_url:
             data["githubUrl"] = github_url
         if nav_links:
@@ -116,14 +119,14 @@ def create_docs_router(
             view_data={"page_title": content["title"]},
         )
 
-    @router.get("")
-    async def docs_index(request: Request, inertia: InertiaDep):
-        """Serve the docs index page."""
-        return await render_page(request, inertia, f"docs/{index_page}")
-
     @router.get("/{path:path}")
     async def docs_page(path: str, request: Request, inertia: InertiaDep):
         """Serve a docs page by path."""
+        # Strip trailing slash from path for file lookup
+        path = path.rstrip("/")
+        # Empty path means index page
+        if not path:
+            path = index_page
         return await render_page(request, inertia, f"docs/{path}")
 
     # Attach nav to router for external access if needed
@@ -220,6 +223,72 @@ def create_docs_handler(
     return handle_docs_page
 
 
+def create_home_route(
+    config: DocsConfig | None = None,
+    *,
+    component: str = "HomePage",
+    render_with_ssr: Callable[..., Any] | None = None,
+) -> Callable:
+    """Create a home page route handler.
+
+    Use this to add a homepage to your FastAPI app:
+
+        from cross_docs import create_home_route, load_config
+
+        config = load_config()
+        home_handler = create_home_route(config)
+
+        @app.get("/")
+        async def home(request: Request, inertia: InertiaDep):
+            return await home_handler(request, inertia)
+
+    Args:
+        config: DocsConfig instance. If None, loads from pyproject.toml.
+        component: Inertia component name for the homepage.
+        render_with_ssr: Optional SSR render function for server-side rendering.
+
+    Returns:
+        Async handler function for the home route.
+    """
+    from .config import load_config
+
+    if config is None:
+        config = load_config()
+
+    home = config.home
+
+    async def handle_home(request: Request, inertia: Any):
+        props = {
+            "title": home.title,
+            "tagline": home.tagline,
+            "description": home.description,
+            "installCommand": home.install_command,
+            "ctaText": home.cta_text,
+            "ctaHref": home.cta_href,
+            "features": home.features,
+            "logoUrl": config.logo_url,
+            "footerLogoUrl": config.footer_logo_url or config.logo_url,
+            "githubUrl": config.github_url,
+            "navLinks": config.nav_links,
+        }
+
+        if render_with_ssr:
+            return await render_with_ssr(
+                request,
+                component,
+                props,
+                view_data={"page_title": home.title},
+            )
+
+        return inertia.render(
+            component,
+            props,
+            view_data={"page_title": home.title},
+        )
+
+    return handle_home
+
+
 def create_docs_router_from_config(
     config: DocsConfig | None = None,
     *,
@@ -264,6 +333,7 @@ def create_docs_router_from_config(
         render_with_ssr=render_with_ssr,
         logo_url=config.logo_url,
         logo_inverted_url=config.logo_inverted_url,
+        footer_logo_url=config.footer_logo_url,
         github_url=config.github_url,
         nav_links=config.nav_links,
     )

@@ -7,5 +7,5 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', 'tailwindcss', '@tailwindcss/typography'],
+  external: ['react', 'react-dom', 'tailwindcss', '@tailwindcss/typography', '@inertiajs/react'],
 })

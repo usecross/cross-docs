@@ -33,10 +33,18 @@ export function Markdown({ content, components }: MarkdownProps) {
             )
           }
 
+          // Parse meta string from the code fence (e.g., ```python title="app.py" showLineNumbers)
+          const meta = (node?.data?.meta as string) || ''
+          const titleMatch = /title="([^"]+)"/.exec(meta)
+          const filename = titleMatch ? titleMatch[1] : undefined
+          const showLineNumbers = meta.includes('showLineNumbers')
+
           return (
             <CodeBlock
               code={String(children).replace(/\n$/, '')}
               language={match ? match[1] : 'text'}
+              filename={filename}
+              showLineNumbers={showLineNumbers}
             />
           )
         },

@@ -1,0 +1,18 @@
+[project]
+name = "cross-docs-monorepo"
+version = "0.1.0"
+description = "Cross-docs monorepo (not published)"
+
+[tool.autopub]
+plugins = [
+    "autopub.plugins.github",
+    "autopub_bun:UvMonorepoPlugin",
+    "autopub_bun:BunPlugin",
+]
+
+[tool.autopub.plugin_config.uv_monorepo]
+package_path = "python"
+
+[tool.autopub.plugin_config.bun]
+package_path = "js"
+build_command = "build"

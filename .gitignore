@@ -42,3 +42,6 @@ htmlcov/
 
 # Build artifacts
 *.log
+
+# Autopub
+.autopub/
