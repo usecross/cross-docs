@@ -30,6 +30,10 @@ export interface HomePageProps extends Omit<HomePageContextValue, 'navLinks'> {
   children?: ReactNode
 }
 
+export interface HomeHeaderProps {
+  renderLogo?: () => ReactNode
+}
+
 export interface HomeFeaturesProps {
   renderFeature?: (
     feature: HomeFeature,
@@ -119,24 +123,38 @@ function GitHubIcon() {
 // ============================================================================
 
 /**
- * Navigation header for the homepage.
+ * Default logo component that renders an image or text.
  */
-export function HomeHeader() {
-  const { title, logoUrl, navLinks, githubUrl } = useHomePage()
+function DefaultLogo() {
+  const { title, logoUrl } = useHomePage()
+
+  if (logoUrl) {
+    return (
+      <Link href="/" className="flex items-center">
+        <img src={logoUrl} alt={title} className="h-8" />
+      </Link>
+    )
+  }
+
+  return (
+    <Link href="/" className="font-bold text-lg">
+      {title}
+    </Link>
+  )
+}
+
+/**
+ * Navigation header for the homepage.
+ * Accepts an optional renderLogo prop for custom logo rendering.
+ */
+export function HomeHeader({ renderLogo }: HomeHeaderProps = {}) {
+  const { navLinks, githubUrl } = useHomePage()
 
   return (
     <nav className="fixed w-full z-50 bg-white border-b border-gray-200">
       <div className="px-4 lg:px-10">
         <div className="flex justify-between h-16 items-center">
-          {logoUrl ? (
-            <Link href="/" className="flex items-center">
-              <img src={logoUrl} alt={title} className="h-8" />
-            </Link>
-          ) : (
-            <Link href="/" className="font-bold text-lg">
-              {title}
-            </Link>
-          )}
+          {renderLogo ? renderLogo() : <DefaultLogo />}
           <div className="flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link

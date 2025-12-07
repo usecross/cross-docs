@@ -42,6 +42,7 @@ export type {
 export type {
   HomePageProps,
   HomePageContextValue,
+  HomeHeaderProps,
   HomeFeaturesProps,
   HomeFeatureItemProps,
   HomeFeature,
