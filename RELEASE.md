@@ -1,7 +1,8 @@
 Release type: patch
 
-Fix npm OIDC trusted publishing for scoped packages.
+Fix release workflow and npm OIDC trusted publishing.
 
+- Simplify workflow to single release job
 - Add publishConfig with provenance in package.json
 - Use Node 24.x for npm publish (workaround for npm CLI bug)
-- Add NPM_CONFIG_PROVENANCE environment variable
+- Create GitHub release using gh CLI
