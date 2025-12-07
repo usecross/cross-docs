@@ -128,7 +128,7 @@ jobs:
       - name: Setup Node.js for npm trusted publishing
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Build JS package
@@ -137,7 +137,9 @@ jobs:
 
       - name: Publish to npm (trusted publishing)
         run: |
-          cd js && npm publish --access public --provenance
+          cd js && npm publish --provenance
+        env:
+          NPM_CONFIG_PROVENANCE: true
 
   create-github-release:
     name: Create GitHub Release
