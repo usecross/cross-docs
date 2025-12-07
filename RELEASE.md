@@ -2,6 +2,7 @@
 release type: patch
 ---
 
-Test release workflow
+Test automated release workflow
 
-- Verify npm trusted publishing with OIDC works correctly
+- Verify full release pipeline works end-to-end
+- Both PyPI and npm publishing with trusted publishing/OIDC
