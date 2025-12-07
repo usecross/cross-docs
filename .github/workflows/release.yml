@@ -136,6 +136,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Commit version bumps and remove RELEASE.md
+      - name: Commit version updates
+        if: steps.pypi.outcome == 'success' || steps.npm.outcome == 'success'
+        run: |
+          VERSION=$(jq -r '.version' .autopub/release_info.json)
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add python/cross_docs/__init__.py python/pyproject.toml js/package.json pyproject.toml
+          rm -f RELEASE.md
+          git add RELEASE.md
+          git commit -m "chore: Bump version to ${VERSION} [skip ci]" || echo "No changes to commit"
+          git push
+
       # Fail the workflow if both publishes failed
       - name: Check publish results
         if: steps.pypi.outcome == 'failure' && steps.npm.outcome == 'failure'
