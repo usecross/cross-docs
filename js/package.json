@@ -1,6 +1,6 @@
 {
   "name": "@usecross/docs",
-  "version": "0.1.0",
+  "version": "0.2.6",
   "description": "Documentation framework built on Cross-Inertia",
   "type": "module",
   "main": "./dist/index.js",
@@ -47,6 +47,10 @@
     "directory": "js"
   },
   "homepage": "https://cross-docs.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "clsx": "^2.1.1",
     "react-markdown": "^10.1.0",

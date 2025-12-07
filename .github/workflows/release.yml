@@ -1,0 +1,112 @@
+name: AutoPub Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check-release:
+    name: Check for release
+    runs-on: ubuntu-latest
+    outputs:
+      has_release: ${{ steps.check.outputs.has_release }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Check for release
+        id: check
+        run: |
+          if uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub check; then
+            echo "has_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_release=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload .autopub artifact
+        if: steps.check.outputs.has_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+          include-hidden-files: true
+
+  release:
+    name: Build and Publish
+    needs: check-release
+    if: ${{ github.ref == 'refs/heads/main' && needs.check-release.outputs.has_release == 'true' }}
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js for npm OIDC
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Download .autopub artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: autopub-data
+          path: .autopub
+
+      - name: Prepare release
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub prepare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Build packages
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub build
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Publish packages
+        run: |
+          uvx --from autopub==1.0.0a50 --with pygithub --with dunamai --with pydantic --with tomlkit autopub publish
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Create GitHub Release
+        run: |
+          VERSION=$(jq -r '.version' .autopub/release_info.json)
+          NOTES=$(jq -r '.release_notes' .autopub/release_info.json)
+          if gh release view "v${VERSION}" > /dev/null 2>&1; then
+            echo "Release v${VERSION} already exists, skipping"
+          else
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes "${NOTES}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

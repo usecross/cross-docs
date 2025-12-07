@@ -1,0 +1,14 @@
+[project]
+name = "cross-docs-monorepo"
+version = "0.2.6"
+description = "Cross-docs monorepo (not published)"
+
+[tool.autopub]
+plugins = [
+    "autopub_bun:CrossDocsPlugin",
+]
+
+[tool.autopub.plugin_config.cross_docs]
+python_path = "python"
+js_path = "js"
+build_command = "build"
