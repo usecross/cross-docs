@@ -22,6 +22,7 @@ _response = get_inertia_response()
 _response.template_dir = str(Path(__file__).parent / "templates")
 _response.vite_dev_url = "http://localhost:5173"
 _response.vite_entry = "app.tsx"
+_response.manifest_path = "frontend/dist/.vite/manifest.json"
 
 app = FastAPI(title="Cross-Docs", docs_url="/api/docs", redoc_url="/api/redoc", lifespan=inertia_lifespan)
 
