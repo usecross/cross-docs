@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from inertia.fastapi import InertiaMiddleware, InertiaDep, get_inertia_response
+from inertia.fastapi.experimental import inertia_lifespan
 
 from cross_docs import create_docs_router_from_config, create_home_route, load_config
 
@@ -17,7 +18,7 @@ _response.template_dir = str(Path(__file__).parent / "templates")
 _response.vite_dev_url = "http://localhost:5173"
 _response.vite_entry = "app.tsx"
 
-app = FastAPI(title="Cross-Docs", docs_url="/api/docs", redoc_url="/api/redoc")
+app = FastAPI(title="Cross-Docs", docs_url="/api/docs", redoc_url="/api/redoc", lifespan=inertia_lifespan)
 
 # Inertia middleware
 app.add_middleware(InertiaMiddleware)

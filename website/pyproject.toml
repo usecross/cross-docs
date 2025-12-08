@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Cross-Docs documentation website"
 requires-python = ">=3.10"
 dependencies = [
-    "fastapi>=0.100.0",
+    "fastapi[standard]>=0.100.0",
     "uvicorn[standard]>=0.20.0",
     "cross-inertia>=0.10.0",
     "cross-docs",
@@ -18,7 +18,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-cross-docs = { path = "../python", editable = true }
+cross-docs = { workspace = true }
 
 [tool.cross-docs]
 content_dir = "content"
