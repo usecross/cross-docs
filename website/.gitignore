@@ -2,8 +2,8 @@
 node_modules/
 .venv/
 
-# Build output
-frontend/dist/
+# Build output (kept for production deployment)
+# frontend/dist/
 
 # Python
 __pycache__/
