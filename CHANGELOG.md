@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+0.2.7 - 2025-12-08
+------------------
+
+Add EmojiConfetti component
+
+- Add reusable EmojiConfetti component for hover-triggered emoji burst animations
+- Include required CSS keyframes animation in styles.css
+
 0.2.6 - 2025-12-07
 ------------------
 

@@ -1,6 +1,6 @@
 [project]
 name = "cross-docs-monorepo"
-version = "0.2.6"
+version = "0.2.7"
 description = "Cross-docs monorepo (not published)"
 
 [tool.autopub]
