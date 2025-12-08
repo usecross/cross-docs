@@ -32,7 +32,7 @@ app.add_middleware(InertiaMiddleware)
 # Serve static files
 static_dir = Path(__file__).parent / "frontend" / "dist"
 if static_dir.exists():
-    app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
+    app.mount("/static/build", StaticFiles(directory=static_dir), name="build")
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
 
 # Documentation routes (loaded from pyproject.toml config)

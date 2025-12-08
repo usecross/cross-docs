@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ isSsrBuild, command }) => ({
   plugins: [react()],
   root: 'frontend',
-  base: command === 'serve' ? '/' : isSsrBuild ? '/' : '/assets/',
+  base: command === 'serve' ? '/' : isSsrBuild ? '/' : '/static/build/',
   resolve: {
     dedupe: ['react', 'react-dom', '@inertiajs/react'],
   },
