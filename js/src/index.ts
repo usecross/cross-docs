@@ -3,6 +3,7 @@ export {
   CodeBlock,
   DocsLayout,
   DocsPage,
+  EmojiConfetti,
   HomePage,
   InlineCode,
   Markdown,
