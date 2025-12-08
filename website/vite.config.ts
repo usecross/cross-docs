@@ -1,19 +1,24 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild, command }) => ({
   plugins: [react()],
   root: 'frontend',
+  base: command === 'serve' ? '/' : isSsrBuild ? '/' : '/assets/',
   resolve: {
     dedupe: ['react', 'react-dom', '@inertiajs/react'],
   },
   build: {
-    outDir: 'dist',
+    outDir: isSsrBuild ? 'dist/ssr' : 'dist',
     emptyOutDir: true,
-    manifest: true,
+    manifest: !isSsrBuild,
     rollupOptions: {
-      input: 'frontend/app.tsx',
+      input: isSsrBuild ? 'frontend/ssr.tsx' : 'frontend/app.tsx',
     },
+  },
+  ssr: {
+    // Bundle all dependencies into the SSR build so no node_modules needed at runtime
+    noExternal: isSsrBuild ? true : ['shiki', '@inertiajs/react'],
   },
   server: {
     origin: 'http://localhost:5173',
@@ -21,4 +26,4 @@ export default defineConfig({
       allow: ['..'],
     },
   },
-})
+}))

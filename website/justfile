@@ -6,7 +6,7 @@ default:
 
 # Install all dependencies (from workspace root)
 install:
-    cd .. && uv sync && bun install
+    cd .. && uv sync && uv run python -m pybun install
 
 # Run the dev server (lifespan handles Vite automatically)
 dev:
@@ -14,7 +14,14 @@ dev:
 
 # Build the frontend for production
 build:
-    bun run build
+    uv run python -m pybun run build
+
+# Build SSR bundle for production
+build-ssr:
+    uv run python -m pybun run build:ssr
+
+# Build everything for production
+build-all: build build-ssr
 
 # Clean build artifacts
 clean:

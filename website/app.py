@@ -1,5 +1,6 @@
 """Cross-Docs documentation website."""
 
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -8,6 +9,10 @@ from inertia.fastapi import InertiaMiddleware, InertiaDep, get_inertia_response
 from inertia.fastapi.experimental import inertia_lifespan
 
 from cross_docs import create_docs_router_from_config, create_home_route, load_config
+
+# Configure inertia lifespan to use pybun (provides bun without system install)
+os.environ.setdefault("INERTIA_SSR_COMMAND", "python -m pybun frontend/dist/ssr/ssr.js")
+os.environ.setdefault("INERTIA_VITE_COMMAND", "python -m pybun run dev")
 
 # Load config from pyproject.toml
 config = load_config()
