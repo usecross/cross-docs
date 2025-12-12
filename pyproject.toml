@@ -2,6 +2,10 @@
 name = "cross-docs-monorepo"
 version = "0.2.7"
 description = "Cross-docs monorepo (not published)"
+requires-python = ">=3.10"
+
+[tool.uv.workspace]
+members = ["python", "website"]
 
 [tool.autopub]
 plugins = [
@@ -12,3 +16,8 @@ plugins = [
 python_path = "python"
 js_path = "js"
 build_command = "build"
+
+[dependency-groups]
+dev = [
+    "fastapi[standard]>=0.124.0",
+]

@@ -1,0 +1,108 @@
+{
+  "../../js/node_modules/shiki/dist/langs/css.mjs": {
+    "file": "assets/css-BPhBrDlE.js",
+    "name": "css",
+    "src": "../../js/node_modules/shiki/dist/langs/css.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/html.mjs": {
+    "file": "assets/html-C2L_23MC.js",
+    "name": "html",
+    "src": "../../js/node_modules/shiki/dist/langs/html.mjs",
+    "isDynamicEntry": true,
+    "imports": [
+      "../../js/node_modules/shiki/dist/langs/javascript.mjs",
+      "../../js/node_modules/shiki/dist/langs/css.mjs"
+    ]
+  },
+  "../../js/node_modules/shiki/dist/langs/javascript.mjs": {
+    "file": "assets/javascript-ySlJ1b_l.js",
+    "name": "javascript",
+    "src": "../../js/node_modules/shiki/dist/langs/javascript.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/json.mjs": {
+    "file": "assets/json-BQoSv7ci.js",
+    "name": "json",
+    "src": "../../js/node_modules/shiki/dist/langs/json.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/jsx.mjs": {
+    "file": "assets/jsx-BAng5TT0.js",
+    "name": "jsx",
+    "src": "../../js/node_modules/shiki/dist/langs/jsx.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/markdown.mjs": {
+    "file": "assets/markdown-UIAJJxZW.js",
+    "name": "markdown",
+    "src": "../../js/node_modules/shiki/dist/langs/markdown.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/python.mjs": {
+    "file": "assets/python-DhUJRlN_.js",
+    "name": "python",
+    "src": "../../js/node_modules/shiki/dist/langs/python.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/toml.mjs": {
+    "file": "assets/toml-CB2ApiWb.js",
+    "name": "toml",
+    "src": "../../js/node_modules/shiki/dist/langs/toml.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/tsx.mjs": {
+    "file": "assets/tsx-B6W0miNI.js",
+    "name": "tsx",
+    "src": "../../js/node_modules/shiki/dist/langs/tsx.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/typescript.mjs": {
+    "file": "assets/typescript-Dj6nwHGl.js",
+    "name": "typescript",
+    "src": "../../js/node_modules/shiki/dist/langs/typescript.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/langs/yaml.mjs": {
+    "file": "assets/yaml-CVw76BM1.js",
+    "name": "yaml",
+    "src": "../../js/node_modules/shiki/dist/langs/yaml.mjs",
+    "isDynamicEntry": true
+  },
+  "../../js/node_modules/shiki/dist/themes/github-dark-dimmed.mjs": {
+    "file": "assets/github-dark-dimmed-DH5Ifo-i.js",
+    "name": "github-dark-dimmed",
+    "src": "../../js/node_modules/shiki/dist/themes/github-dark-dimmed.mjs",
+    "isDynamicEntry": true
+  },
+  "_shellscript-k39CVLgC.js": {
+    "file": "assets/shellscript-k39CVLgC.js",
+    "name": "shellscript",
+    "isDynamicEntry": true
+  },
+  "app.tsx": {
+    "file": "assets/app-8GWut9WX.js",
+    "name": "app",
+    "src": "app.tsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "../../js/node_modules/shiki/dist/langs/python.mjs",
+      "../../js/node_modules/shiki/dist/langs/javascript.mjs",
+      "../../js/node_modules/shiki/dist/langs/typescript.mjs",
+      "../../js/node_modules/shiki/dist/langs/tsx.mjs",
+      "../../js/node_modules/shiki/dist/langs/jsx.mjs",
+      "_shellscript-k39CVLgC.js",
+      "_shellscript-k39CVLgC.js",
+      "../../js/node_modules/shiki/dist/langs/json.mjs",
+      "../../js/node_modules/shiki/dist/langs/html.mjs",
+      "../../js/node_modules/shiki/dist/langs/css.mjs",
+      "../../js/node_modules/shiki/dist/langs/yaml.mjs",
+      "../../js/node_modules/shiki/dist/langs/toml.mjs",
+      "../../js/node_modules/shiki/dist/langs/markdown.mjs",
+      "../../js/node_modules/shiki/dist/themes/github-dark-dimmed.mjs"
+    ],
+    "css": [
+      "assets/app-C9YqL2Rv.css"
+    ]
+  }
+}
