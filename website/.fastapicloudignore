@@ -1,2 +1,2 @@
 # Include build artifacts for production
-!website/frontend/dist/
+!frontend/dist/
