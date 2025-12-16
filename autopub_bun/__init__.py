@@ -169,8 +169,8 @@ class CrossDocsPlugin(AutopubPlugin, AutopubPackageManagerPlugin):
 
     def build(self) -> None:
         """Build both Python and JS packages."""
-        # Build Python
-        self._run_command(["uv", "build"], cwd=self.python_path)
+        # Build Python with explicit output directory to avoid workspace issues
+        self._run_command(["uv", "build", "--out-dir", "dist"], cwd=self.python_path)
 
         # Build JS
         self._run_command(
