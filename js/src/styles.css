@@ -82,11 +82,11 @@
 
   /* Code block styling - rounded corners like Starlight */
   .prose pre {
-    @apply !bg-[#24292f] !p-0 overflow-hidden rounded-lg;
+    @apply bg-[#24292f]! p-0! overflow-hidden rounded-lg;
   }
 
   .prose pre code {
-    @apply !bg-transparent !p-4 block overflow-x-auto text-sm;
+    @apply bg-transparent! p-4! block overflow-x-auto text-sm;
   }
 
   /* Inline code styling */
@@ -102,7 +102,7 @@
 
 /* Syntax highlighting - rounded corners like Starlight */
 .shiki {
-  @apply !bg-[#24292f] overflow-hidden rounded-lg;
+  @apply bg-[#24292f]! overflow-hidden rounded-lg;
 }
 
 .shiki code {
