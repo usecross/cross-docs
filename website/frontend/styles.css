@@ -1,8 +1,8 @@
-@import '@usecross/docs/styles.css';
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@plugin "@tailwindcss/typography";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '@usecross/docs/styles.css';
 
 :root {
   --color-primary-500: #AA5655;
