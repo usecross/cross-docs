@@ -73,7 +73,7 @@ wheels = [
 
 [[package]]
 name = "cross-docs"
-version = "0.2.8"
+version = "0.3.0"
 source = { editable = "python" }
 dependencies = [
     { name = "cross-inertia" },
@@ -88,7 +88,7 @@ requires-dist = [
 
 [[package]]
 name = "cross-docs-monorepo"
-version = "0.2.8"
+version = "0.3.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
