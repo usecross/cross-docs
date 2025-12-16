@@ -13,7 +13,7 @@ export default defineConfig(({ isSsrBuild, command }) => ({
     emptyOutDir: true,
     manifest: !isSsrBuild,
     rollupOptions: {
-      input: isSsrBuild ? 'frontend/ssr.tsx' : 'frontend/app.tsx',
+      input: isSsrBuild ? 'ssr.tsx' : 'app.tsx',
     },
   },
   ssr: {

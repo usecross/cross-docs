@@ -20,6 +20,7 @@ dev = [
 
 [tool.uv.sources]
 cross-docs = { workspace = true }
+cross-inertia = { path = "../../../patrick91/cross-inertia", editable = true }
 
 [tool.cross-docs]
 content_dir = "content"

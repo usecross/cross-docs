@@ -26,6 +26,7 @@ class HomeConfig:
 
         [tool.cross-docs.home]
         enabled = true
+        component = "HomePage"
         title = "My Project"
         tagline = "A great library for doing things"
         description = "Build amazing things with this library"
@@ -43,6 +44,7 @@ class HomeConfig:
     """
 
     enabled: bool = False
+    component: str = "HomePage"
     title: str = ""
     tagline: str = ""
     description: str = ""
