@@ -1,58 +1,20 @@
 ---
-release type: minor
+release type: patch
 ---
 
-# Refactor to CrossDocs class
+# Fix CI build by removing local dependency override
 
-This release introduces a simpler, more intuitive API by replacing the old route factory functions with a unified `CrossDocs` class.
+## Summary
 
-## Breaking Changes
+This patch fixes the automated release process by removing a local development dependency override that was causing CI builds to fail.
 
-The following route factory functions have been removed from the public API:
-- `create_docs_router()`
-- `create_docs_router_from_config()`
-- `create_docs_handler()`
-- `create_home_route()`
+## Changes
 
-## Migration Guide
+- Removed local editable path to `cross-inertia` from `website/pyproject.toml`
+- Regenerated `uv.lock` to use the published PyPI version of `cross-inertia` instead
 
-**Before:**
-```python
-from cross_docs import create_docs_router_from_config, create_home_route, load_config
+## Context
 
-config = load_config()
-docs_router = create_docs_router_from_config(config)
-app.include_router(docs_router)
+The previous release failed in CI because `website/pyproject.toml` had a `[tool.uv.sources]` override pointing to a local development path (`../../../patrick91/cross-inertia`) that doesn't exist in the CI environment. This caused `uv lock` to fail during the autopub prepare step.
 
-home_handler = create_home_route(config)
-
-@app.get("/")
-async def home(request: Request, inertia: InertiaDep):
-    return await home_handler(request, inertia)
-```
-
-**After:**
-```python
-from cross_docs import CrossDocs
-
-docs = CrossDocs()
-docs.mount(app)
-```
-
-## New Features
-
-- **Unified `CrossDocs` class**: Simpler API that automatically handles both docs and home routes
-- **Auto-configuration**: Automatically loads configuration from pyproject.toml
-- **Component customization**: Override component names via constructor parameters:
-  ```python
-  docs = CrossDocs(
-      docs_component="custom/DocsPage",
-      home_component="custom/HomePage",
-  )
-  ```
-
-## Other Changes
-
-- Added `component` field to `HomeConfig` for customizing the home page component
-- Moved `.fastapicloudignore` to website directory
-- Updated dependencies (fastapi 0.124.4, urllib3 2.6.2)
+The fix ensures that the published version from PyPI is used in both development and CI environments.

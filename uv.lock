@@ -123,7 +123,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "cross-docs", editable = "python" },
-    { name = "cross-inertia", editable = "../../patrick91/cross-inertia" },
+    { name = "cross-inertia", specifier = ">=0.10.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.100.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "jinja2", specifier = ">=3.1.6" },
@@ -136,29 +136,14 @@ provides-extras = ["dev"]
 [[package]]
 name = "cross-inertia"
 version = "0.11.2"
-source = { editable = "../../patrick91/cross-inertia" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "itsdangerous" },
     { name = "lia-web" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "itsdangerous", specifier = ">=2.2.0" },
-    { name = "lia-web", specifier = ">=0.2.3" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "fastapi", extras = ["standard"], specifier = ">=0.116.1" },
-    { name = "httpx", specifier = ">=0.28.0" },
-    { name = "mypy", specifier = ">=1.13.0" },
-    { name = "nox", specifier = ">=2024.4.15" },
-    { name = "playwright", specifier = ">=1.48.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "pytest-playwright", specifier = ">=0.6.2" },
-    { name = "ruff", specifier = ">=0.8.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/36/80/c70a3568f92993aaccc62018ae18acfa6b500139c3afd74c0fe7f1ea9bde/cross_inertia-0.11.2.tar.gz", hash = "sha256:11bc8028ff397f26f2340425974b340c3b47460e1504388b356e36deac5b33f6", size = 2399571, upload-time = "2025-12-11T10:53:48.89Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/1c/27024dd92c5385a84b89562e7bea22925c56593d52009f5ea8a3a5f16308/cross_inertia-0.11.2-py3-none-any.whl", hash = "sha256:d9cc5c58e3472c5509759ec0300a6538ee6acdeb3bee424e94527d096a7955ff", size = 27525, upload-time = "2025-12-11T10:53:47.634Z" },
 ]
 
 [[package]]
