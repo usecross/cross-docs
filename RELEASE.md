@@ -1,5 +1,5 @@
 ---
-release_type: minor
+release type: minor
 ---
 
 # Refactor to CrossDocs class
