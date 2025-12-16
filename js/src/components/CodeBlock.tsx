@@ -61,13 +61,13 @@ export function CodeBlock({
       {html ? (
         <div
           className={cn(
-            'overflow-x-auto text-sm [&_pre]:!m-0 [&_pre]:!bg-transparent [&_code]:!p-4',
+            'overflow-x-auto text-sm [&_pre]:m-0 [&_pre]:bg-transparent [&_code]:p-4',
             showLineNumbers && '[&_code]:grid [&_code]:grid-cols-[auto_1fr]'
           )}
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <pre className="shiki overflow-x-auto !m-0 !bg-transparent">
+        <pre className="shiki overflow-x-auto m-0 bg-transparent">
           <code className="block p-4 text-sm leading-relaxed text-gray-300">{code.trim()}</code>
         </pre>
       )}
