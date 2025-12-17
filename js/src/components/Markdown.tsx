@@ -8,11 +8,24 @@ import type { MarkdownProps } from '../types'
  * Markdown renderer with syntax highlighting and GFM support.
  */
 export function Markdown({ content, components }: MarkdownProps) {
+  // Create lowercase mappings for custom components
+  // HTML tag names are case-insensitive, so <TerminalExample> becomes <terminalexample>
+  const lowercaseComponents = components
+    ? Object.entries(components).reduce(
+        (acc, [name, Component]) => {
+          acc[name.toLowerCase()] = Component
+          return acc
+        },
+        {} as Record<string, React.ComponentType<any>>
+      )
+    : {}
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       components={{
+        ...lowercaseComponents,
         // Override pre to avoid double wrapping with CodeBlock
         pre({ children }) {
           return <>{children}</>
@@ -83,8 +96,6 @@ export function Markdown({ content, components }: MarkdownProps) {
             </td>
           )
         },
-        // Allow component overrides
-        ...components,
       }}
     >
       {content}
