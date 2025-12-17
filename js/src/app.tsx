@@ -1,6 +1,7 @@
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import type { DocsAppConfig } from './types'
+import { ComponentsProvider } from './context/ComponentsContext'
 
 /**
  * Create and mount an Inertia.js documentation app.
@@ -18,7 +19,7 @@ import type { DocsAppConfig } from './types'
  * ```
  */
 export function createDocsApp(config: DocsAppConfig): void {
-  const { pages, title } = config
+  const { pages, title, components } = config
 
   // Disable scroll restoration on initial page load
   if (typeof window !== 'undefined') {
@@ -36,10 +37,16 @@ export function createDocsApp(config: DocsAppConfig): void {
       return page
     },
     setup({ el, App, props }) {
+      const appElement = (
+        <ComponentsProvider components={components}>
+          <App {...props} />
+        </ComponentsProvider>
+      )
+
       if (el.hasChildNodes()) {
-        hydrateRoot(el, <App {...props} />)
+        hydrateRoot(el, appElement)
       } else {
-        createRoot(el).render(<App {...props} />)
+        createRoot(el).render(appElement)
       }
     },
   })
