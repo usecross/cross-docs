@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+0.4.1 - 2026-01-02
+------------------
+
+# Update for cross-inertia module rename
+
+Updates all imports from `inertia` to `cross_inertia` to match the upstream module rename in cross-inertia v0.11.0.
+
+See: https://github.com/usecross/cross-inertia/pull/76
+
 0.4.0 - 2026-01-02
 ------------------
 
