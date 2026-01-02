@@ -81,7 +81,7 @@
     "isDynamicEntry": true
   },
   "app.tsx": {
-    "file": "assets/app-8GWut9WX.js",
+    "file": "assets/app-NPLcea4M.js",
     "name": "app",
     "src": "app.tsx",
     "isEntry": true,
@@ -102,7 +102,7 @@
       "../../js/node_modules/shiki/dist/themes/github-dark-dimmed.mjs"
     ],
     "css": [
-      "assets/app-C9YqL2Rv.css"
+      "assets/app-Bs3NClFX.css"
     ]
   }
 }
