@@ -88,4 +88,6 @@ export interface CodeBlockProps {
 export interface DocsAppConfig {
   pages: Record<string, React.ComponentType<any>>
   title?: (pageTitle: string) => string
+  /** Custom components to use in markdown (e.g., Alert, Card, etc.) */
+  components?: Record<string, React.ComponentType<any>>
 }
