@@ -1,2 +1,2 @@
-# Include build artifacts for production
-!frontend/dist/
+!static/build/
+!static/build/.vite
