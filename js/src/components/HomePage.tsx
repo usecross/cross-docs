@@ -363,8 +363,18 @@ export function HomeFooter() {
 }
 
 /**
- * Default layout when no children are provided.
+ * Spacer that fills remaining vertical space.
+ * Shows a top border (via gradient) only when it has height.
  */
+function HomeSpacer() {
+  return (
+    <div
+      className="grow"
+      style={{ backgroundImage: 'linear-gradient(rgb(229, 231, 235) 1px, transparent 1px)' }}
+    />
+  )
+}
+
 function DefaultHomeLayout() {
   return (
     <>
@@ -372,6 +382,7 @@ function DefaultHomeLayout() {
       <HomeHero />
       <HomeFeatures />
       <HomeCTA />
+      <HomeSpacer />
       <HomeFooter />
     </>
   )
@@ -417,7 +428,7 @@ export function HomePage({
 
   return (
     <HomePageContext.Provider value={contextValue}>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white flex flex-col">
         <Head title={props.title} />
         {children || <DefaultHomeLayout />}
       </div>
