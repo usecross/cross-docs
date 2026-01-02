@@ -5,8 +5,11 @@ from pathlib import Path
 from cross_docs import CrossDocs
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from inertia.fastapi import InertiaMiddleware
-from inertia.fastapi.experimental import inertia_lifespan
+from cross_inertia import configure_inertia
+from cross_inertia.fastapi import InertiaMiddleware
+from cross_inertia.fastapi.experimental import inertia_lifespan
+
+configure_inertia(vite_entry="app.tsx")
 
 app = FastAPI(
     title="Cross-Docs",
