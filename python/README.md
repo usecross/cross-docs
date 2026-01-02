@@ -20,7 +20,7 @@ from cross_docs import (
     create_docs_handler,
     strip_trailing_slash_middleware,
 )
-from inertia.fastapi import InertiaDep
+from cross_inertia.fastapi import InertiaDep
 
 app = FastAPI()
 app.middleware("http")(strip_trailing_slash_middleware)

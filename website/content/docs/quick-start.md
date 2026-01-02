@@ -17,7 +17,7 @@ Set up a FastAPI application with Cross-Docs:
 from pathlib import Path
 from fastapi import FastAPI
 from cross_docs import create_docs_router
-from inertia.fastapi import InertiaMiddleware
+from cross_inertia.fastapi import InertiaMiddleware
 
 # Use docs_url to avoid conflict with cross-docs at /docs
 app = FastAPI(docs_url="/api/docs", redoc_url="/api/redoc")

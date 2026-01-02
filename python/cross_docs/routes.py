@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
-from inertia.fastapi import InertiaDep
+from cross_inertia.fastapi import InertiaDep
 
 from .markdown import load_markdown, load_raw_markdown
 from .middleware import wants_markdown

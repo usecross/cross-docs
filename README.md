@@ -38,7 +38,7 @@ npm install @usecross/docs
 from pathlib import Path
 from fastapi import FastAPI
 from cross_docs import create_docs_router, strip_trailing_slash_middleware
-from inertia.fastapi import InertiaMiddleware
+from cross_inertia.fastapi import InertiaMiddleware
 
 app = FastAPI()
 app.add_middleware(InertiaMiddleware)
