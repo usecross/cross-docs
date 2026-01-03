@@ -67,6 +67,8 @@ class DocsConfig:
         section_order = ["Getting Started", "Guide", "API"]
         logo_url = "/static/logo.svg"
         logo_inverted_url = "/static/logo-inverted.svg"
+        footer_logo_url = "/static/footer-logo.svg"
+        footer_logo_inverted_url = "/static/footer-logo-inverted.svg"
         github_url = "https://github.com/org/repo"
 
         [[tool.cross-docs.nav_links]]
@@ -85,6 +87,7 @@ class DocsConfig:
     logo_url: str | None = None
     logo_inverted_url: str | None = None
     footer_logo_url: str | None = None
+    footer_logo_inverted_url: str | None = None
     github_url: str | None = None
     nav_links: list[dict[str, str]] | None = None
     component: str = "docs/DocsPage"

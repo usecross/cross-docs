@@ -1,5 +1,7 @@
 import { Head, Link } from '@inertiajs/react'
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import { ThemeToggle } from './ThemeToggle'
+import { useTheme } from './ThemeProvider'
 
 // ============================================================================
 // Types
@@ -21,6 +23,7 @@ export interface HomePageContextValue {
   logoUrl?: string
   heroLogoUrl?: string
   footerLogoUrl?: string
+  footerLogoInvertedUrl?: string
   githubUrl?: string
   navLinks: Array<{ label: string; href: string }>
 }
@@ -78,9 +81,9 @@ function InstallCommand({ command }: { command: string }) {
   return (
     <button
       onClick={copyToClipboard}
-      className="group relative flex items-center bg-black border border-black px-4 h-14 font-mono text-sm text-white hover:bg-white hover:text-black transition-colors cursor-pointer"
+      className="group relative flex items-center bg-gray-900 dark:bg-white border border-gray-900 dark:border-white px-4 h-14 font-mono text-sm text-white dark:text-gray-900 hover:bg-white dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer"
     >
-      <span className="text-primary-500 mr-2">$</span>
+      <span className="text-primary-500 dark:text-primary-600 mr-2">$</span>
       <span>{command}</span>
       <svg
         className={`ml-4 w-4 h-4 transition ${copied ? 'text-green-400' : 'opacity-50 group-hover:opacity-100'}`}
@@ -96,7 +99,7 @@ function InstallCommand({ command }: { command: string }) {
         />
       </svg>
       <span
-        className={`absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded transition-opacity duration-300 whitespace-nowrap ${
+        className={`absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs py-1 px-2 rounded transition-opacity duration-300 whitespace-nowrap ${
           copied ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -137,7 +140,7 @@ function DefaultLogo() {
   }
 
   return (
-    <Link href="/" className="font-bold text-lg">
+    <Link href="/" className="font-bold text-lg text-gray-900 dark:text-white">
       {title}
     </Link>
   )
@@ -151,16 +154,20 @@ export function HomeHeader({ renderLogo }: HomeHeaderProps = {}) {
   const { navLinks, githubUrl } = useHomePage()
 
   return (
-    <nav className="fixed w-full z-50 bg-white border-b border-gray-200">
+    <nav className="fixed w-full z-50 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-colors">
       <div className="px-4 lg:px-10">
         <div className="flex justify-between h-16 items-center">
           {renderLogo ? renderLogo() : <DefaultLogo />}
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center gap-6">
+            <div className="-mr-2">
+              <ThemeToggle size="sm" />
+            </div>
+
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-black font-medium hover:text-primary-500 transition-colors"
+                className="hidden sm:block text-gray-700 dark:text-gray-300 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               >
                 {link.label}
               </Link>
@@ -170,7 +177,7 @@ export function HomeHeader({ renderLogo }: HomeHeaderProps = {}) {
                 href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-black hover:text-primary-500 transition-colors"
+                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               >
                 <GitHubIcon />
               </a>
@@ -193,7 +200,7 @@ export function HomeHero() {
     <section className="pt-16">
       <div className="px-4 lg:px-10 py-16 lg:py-24">
         <div className="max-w-4xl">
-          <div className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-500">
+          <div className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
             {tagline}
           </div>
           {heroLogoUrl ? (
@@ -205,18 +212,18 @@ export function HomeHero() {
               />
             </h1>
           ) : (
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6">
+            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-6 text-gray-900 dark:text-white">
               {title}
             </h1>
           )}
-          <p className="text-xl lg:text-2xl text-gray-700 max-w-2xl leading-relaxed mb-8">
+          <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed mb-8">
             {description}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href={ctaHref}
-              className="inline-flex items-center justify-center px-8 h-14 bg-black text-white font-bold text-lg hover:bg-primary-500 transition-colors border border-black"
+              className="inline-flex items-center justify-center px-8 h-14 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold text-lg hover:bg-primary-500 dark:hover:bg-primary-500 dark:hover:text-white transition-colors border border-gray-900 dark:border-white hover:border-primary-500 dark:hover:border-primary-500"
             >
               {ctaText}
             </Link>
@@ -234,17 +241,17 @@ export function HomeHero() {
 export function HomeFeatureItem({ feature, index, totalFeatures }: HomeFeatureItemProps) {
   return (
     <div
-      className={`p-4 lg:p-10 border-b sm:border-b border-gray-200 ${
+      className={`p-4 lg:p-10 border-b sm:border-b border-gray-200 dark:border-gray-800 ${
         index % 2 === 0 ? 'sm:border-r' : ''
       } ${index >= totalFeatures - 2 ? 'sm:border-b-0' : ''} ${
         index === totalFeatures - 1 && totalFeatures % 2 === 1 ? 'border-b-0' : ''
-      }`}
+      } transition-colors`}
     >
-      <div className="text-5xl font-bold text-primary-500 mb-4">
+      <div className="text-5xl font-bold text-primary-500 dark:text-primary-400 mb-4">
         {String(index + 1).padStart(2, '0')}
       </div>
-      <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-      <p className="text-gray-600">{feature.description}</p>
+      <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
+      <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
     </div>
   )
 }
@@ -260,13 +267,13 @@ export function HomeFeatures({ renderFeature }: HomeFeaturesProps = {}) {
   }
 
   return (
-    <section className="border-t border-gray-200">
+    <section className="border-t border-gray-200 dark:border-gray-800 transition-colors">
       <div className="grid grid-cols-12">
-        <div className="col-span-12 lg:col-span-4 p-4 lg:p-10 border-b lg:border-b-0 lg:border-r border-gray-200">
-          <div className="text-sm font-mono uppercase tracking-widest text-gray-500 mb-4">
+        <div className="col-span-12 lg:col-span-4 p-4 lg:p-10 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800 transition-colors">
+          <div className="text-sm font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
             Features
           </div>
-          <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
+          <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
             Why {title}?
           </h2>
         </div>
@@ -299,27 +306,27 @@ export function HomeCTA() {
   const { ctaHref } = useHomePage()
 
   return (
-    <section className="border-t border-gray-200">
+    <section className="border-t border-gray-200 dark:border-gray-800 transition-colors">
       <div className="grid grid-cols-12 items-center">
         <div className="col-span-12 lg:col-span-8 p-4 lg:p-10">
-          <h2 className="text-4xl lg:text-6xl font-bold tracking-tight mb-4">
+          <h2 className="text-4xl lg:text-6xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
             Ready to start?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl">
             Get up and running in minutes. Check out our documentation to learn more.
           </p>
           <Link
             href={ctaHref}
-            className="inline-flex items-center justify-center px-8 py-4 bg-primary-500 text-white font-bold text-lg hover:bg-black transition-colors border border-primary-500 hover:border-black"
+            className="inline-flex items-center justify-center px-8 py-4 bg-primary-500 text-white font-bold text-lg hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 transition-colors border border-primary-500 hover:border-gray-900 dark:hover:border-white"
           >
             Read the Docs
           </Link>
         </div>
         <Link
           href={ctaHref}
-          className="col-span-12 lg:col-span-4 h-full bg-primary-500 hidden lg:flex items-center justify-center p-4 lg:p-10 hover:bg-black transition-colors min-h-[200px]"
+          className="col-span-12 lg:col-span-4 h-full bg-primary-500 hidden lg:flex items-center justify-center p-4 lg:p-10 hover:bg-gray-900 dark:hover:bg-white transition-colors min-h-[200px] group"
         >
-          <div className="text-white text-8xl font-bold">&rarr;</div>
+          <div className="text-white group-hover:text-white dark:group-hover:text-gray-900 text-8xl font-bold transition-colors">&rarr;</div>
         </Link>
       </div>
     </section>
@@ -330,19 +337,25 @@ export function HomeCTA() {
  * Footer section.
  */
 export function HomeFooter() {
-  const { title, logoUrl, footerLogoUrl, navLinks, githubUrl } = useHomePage()
+  const { title, logoUrl, footerLogoUrl, footerLogoInvertedUrl, navLinks, githubUrl } = useHomePage()
+  const { resolvedTheme } = useTheme()
+
+  // Select appropriate logo based on theme
+  const currentLogoUrl = resolvedTheme === 'dark'
+    ? (footerLogoInvertedUrl || footerLogoUrl || logoUrl)
+    : (footerLogoUrl || logoUrl)
 
   return (
-    <footer className="border-t border-gray-200 py-8">
+    <footer className="border-t border-gray-200 dark:border-gray-800 py-8 bg-white dark:bg-[#0f0f0f] transition-colors">
       <div className="px-4 lg:px-10 flex flex-col md:flex-row justify-between items-center gap-6">
-        {(footerLogoUrl || logoUrl) && (
+        {currentLogoUrl && (
           <Link href="/">
-            <img src={footerLogoUrl || logoUrl} alt={title} className="h-6" />
+            <img src={currentLogoUrl} alt={title} className="h-6" />
           </Link>
         )}
-        <div className="flex gap-8 text-sm text-gray-600">
+        <div className="flex gap-8 text-sm text-gray-600 dark:text-gray-300">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-black transition-colors">
+            <Link key={link.href} href={link.href} className="hover:text-black dark:hover:text-white transition-colors">
               {link.label}
             </Link>
           ))}
@@ -351,7 +364,7 @@ export function HomeFooter() {
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-black transition-colors"
+              className="hover:text-black dark:hover:text-white transition-colors"
             >
               GitHub
             </a>
@@ -369,8 +382,17 @@ export function HomeFooter() {
 function HomeSpacer() {
   return (
     <div
-      className="grow"
+      className="grow dark:hidden"
       style={{ backgroundImage: 'linear-gradient(rgb(229, 231, 235) 1px, transparent 1px)' }}
+    />
+  )
+}
+
+function HomeSpacerDark() {
+  return (
+    <div
+      className="grow hidden dark:block"
+      style={{ backgroundImage: 'linear-gradient(rgb(38, 38, 38) 1px, transparent 1px)' }}
     />
   )
 }
@@ -383,6 +405,7 @@ function DefaultHomeLayout() {
       <HomeFeatures />
       <HomeCTA />
       <HomeSpacer />
+      <HomeSpacerDark />
       <HomeFooter />
     </>
   )
@@ -428,7 +451,7 @@ export function HomePage({
 
   return (
     <HomePageContext.Provider value={contextValue}>
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-white dark:bg-[#0f0f0f] flex flex-col transition-colors duration-200">
         <Head title={props.title} />
         {children || <DefaultHomeLayout />}
       </div>

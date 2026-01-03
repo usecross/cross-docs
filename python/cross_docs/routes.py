@@ -134,6 +134,7 @@ class CrossDocs:
             if config.logo_inverted_url:
                 data["logoInvertedUrl"] = config.logo_inverted_url
             data["footerLogoUrl"] = config.footer_logo_url or config.logo_url
+            data["footerLogoInvertedUrl"] = config.footer_logo_inverted_url or config.logo_inverted_url
             if config.github_url:
                 data["githubUrl"] = config.github_url
             if config.nav_links:
@@ -189,6 +190,7 @@ class CrossDocs:
                 "features": home.features,
                 "logoUrl": config.logo_url,
                 "footerLogoUrl": config.footer_logo_url or config.logo_url,
+                "footerLogoInvertedUrl": config.footer_logo_inverted_url or config.logo_inverted_url,
                 "githubUrl": config.github_url,
                 "navLinks": config.nav_links,
             }

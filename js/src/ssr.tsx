@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import createServer from '@inertiajs/react/server'
 import ReactDOMServer from 'react-dom/server'
 import type { DocsAppConfig } from './types'
+import { ThemeProvider } from './components/ThemeProvider'
 
 /**
  * Create an SSR server for documentation.
@@ -33,7 +34,11 @@ export function createDocsServer(config: DocsAppConfig): void {
         }
         return pageComponent
       },
-      setup: ({ App, props }) => <App {...props} />,
+      setup: ({ App, props }) => (
+        <ThemeProvider>
+          <App {...props} />
+        </ThemeProvider>
+      ),
     })
   )
 }

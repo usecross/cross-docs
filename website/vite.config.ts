@@ -9,6 +9,8 @@ export default defineConfig(({ isSsrBuild, command }) => ({
   base: command === 'serve' ? '/' : isSsrBuild ? '/' : '/static/build/',
   resolve: {
     dedupe: ['react', 'react-dom', '@inertiajs/react'],
+    // Use source files from @usecross/docs for hot-reloading during development
+    conditions: command === 'serve' ? ['development'] : [],
   },
   build: {
     outDir: isSsrBuild ? '../frontend/dist/ssr' : '../static/build',
