@@ -25,6 +25,7 @@ venv/
 # JavaScript
 node_modules/
 js/dist/
+website/frontend/dist/
 *.tsbuildinfo
 
 # IDE
