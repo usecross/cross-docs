@@ -47,29 +47,29 @@ createDocsApp({
 })
 ```
 
-## 3. Configure Tailwind
+## 3. Configure Tailwind CSS
 
-Create a `tailwind.config.js`:
+Cross-Docs uses Tailwind CSS v4 with CSS-based configuration. Create your main CSS file:
 
-```javascript
-const docsPreset = require('@usecross/docs/tailwind.preset')
+```css
+/* styles.css */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
 
-module.exports = {
-  presets: [docsPreset],
-  content: [
-    './frontend/**/*.{ts,tsx}',
-    './node_modules/@usecross/docs/**/*.{js,tsx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          500: '#22c55e',
-          600: '#16a34a',
-        },
-      },
-    },
-  },
+@import '@usecross/docs/styles.css';
+
+/* Scan the library for utility classes */
+@source "../node_modules/@usecross/docs";
+```
+
+To customize the primary color, add a `@theme` block:
+
+```css
+@theme {
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  /* Add more shades as needed */
 }
 ```
 

@@ -47,10 +47,10 @@ bun add @usecross/docs
 
 ## Peer dependencies
 
-The JavaScript package requires these peer dependencies:
+The JavaScript package requires these peer dependencies (Tailwind CSS v4+):
 
 ```bash
-npm install react react-dom tailwindcss @tailwindcss/typography
+npm install react react-dom tailwindcss@^4 @tailwindcss/typography
 ```
 
 ## Next steps

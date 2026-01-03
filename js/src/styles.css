@@ -1,22 +1,49 @@
 /**
- * Cross-Docs default styles
+ * Cross-Docs default styles (Tailwind CSS v4)
  *
- * Import this file in your app's CSS entry point:
+ * Import this file in your app's CSS entry point after importing Tailwind:
+ *
+ * @import "tailwindcss";
+ * @plugin "@tailwindcss/typography";
+ * @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
  * @import '@usecross/docs/styles.css';
+ * @source "../node_modules/@usecross/docs";
+ *
+ * Note: The @source directive ensures Tailwind scans the package for utility classes.
+ * Note: The Google Fonts import must come before other imports to avoid CSS ordering warnings.
  */
 
-@reference "tailwindcss";
+/* Theme customizations for Tailwind v4 */
+@theme {
+  /* Max width */
+  --max-width-8xl: 88rem;
 
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+  /* Font families */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
+
+  /* Default primary colors - sky blue (can be overridden via CSS variables) */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-primary-950: #082f49;
+
+  /* Dark colors for code blocks */
+  --color-dark-800: #1e293b;
+  --color-dark-900: #0f172a;
+}
 
 @layer base {
   :root {
-    /* Font stacks */
-    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
-      sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-    --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'Fira Code', Consolas, Monaco, 'Andale Mono', monospace;
-
     /* Code highlighting - matches Starlight/Expressive Code dark theme */
     --shiki-color-text: #e2e8f0;
     --shiki-color-background: #24292f;
@@ -41,11 +68,9 @@
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-white text-gray-800;
     font-family: var(--font-sans);
     font-weight: 400;
-    background: #ffffff;
-    color: #1f2937;
   }
 
   /* Headings use heading font */
@@ -63,8 +88,19 @@
 @layer components {
   /* Prose content styles */
   .prose {
+    max-width: none;
     font-size: 1rem;
     line-height: 1.75;
+  }
+
+  /* Prose link styling */
+  .prose a {
+    @apply text-primary-600 hover:text-primary-700;
+  }
+
+  /* Dark mode prose link styling */
+  .prose-invert a {
+    @apply text-primary-400 hover:text-primary-300;
   }
 
   /* Scroll margin for headings (so they don't hide under fixed header) */
@@ -98,6 +134,11 @@
   .prose :not(pre) > code::before,
   .prose :not(pre) > code::after {
     content: none;
+  }
+
+  /* Dark mode inline code */
+  .prose-invert :not(pre) > code {
+    @apply bg-gray-800;
   }
 }
 
