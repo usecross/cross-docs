@@ -18,8 +18,8 @@ dev = [
     "watchfiles>=0.20.0",
 ]
 
-# cross-docs is in main dependencies, uses PyPI by default.
-# For local dev, run: uv pip install -e ../python
+[tool.uv.sources]
+cross-docs = { workspace = true }
 
 [tool.cross-docs]
 content_dir = "content"
@@ -28,6 +28,7 @@ index_page = "introduction"
 section_order = ["Getting Started", "Guide", "API Reference"]
 logo_url = "/static/logo.svg"
 footer_logo_url = "/static/logo-extended.svg"
+footer_logo_inverted_url = "/static/logo-extended-dark.svg"
 github_url = "https://github.com/usecross/cross-docs"
 
 [[tool.cross-docs.nav_links]]

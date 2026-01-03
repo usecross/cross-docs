@@ -2,10 +2,15 @@
 @plugin "@tailwindcss/typography";
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
 
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import '@usecross/docs/styles.css';
 
 /* Scan the library for utility classes */
-@source "../node_modules/@usecross/docs";
+@source "../../js/src/**/*.tsx";
+@source "../../js/src/**/*.ts";
+@source "../../js/dist/**/*.js";
 
 /* Override the primary color */
 @theme {

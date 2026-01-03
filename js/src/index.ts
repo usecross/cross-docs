@@ -8,6 +8,10 @@ export {
   InlineCode,
   Markdown,
   Sidebar,
+  ThemeProvider,
+  ThemeToggle,
+  useTheme,
+  themeInitScript,
 } from './components'
 
 // HomePage sub-components (for compound component pattern)
@@ -39,6 +43,8 @@ export type {
   SharedProps,
   SidebarProps,
 } from './types'
+
+export type { Theme, ResolvedTheme } from './components/ThemeProvider'
 
 export type {
   HomePageProps,

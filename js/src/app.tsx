@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import type { DocsAppConfig } from './types'
 import { ComponentsProvider } from './context/ComponentsContext'
+import { ThemeProvider } from './components/ThemeProvider'
 
 /**
  * Create and mount an Inertia.js documentation app.
@@ -38,9 +39,11 @@ export function createDocsApp(config: DocsAppConfig): void {
     },
     setup({ el, App, props }) {
       const appElement = (
-        <ComponentsProvider components={components}>
-          <App {...props} />
-        </ComponentsProvider>
+        <ThemeProvider>
+          <ComponentsProvider components={components}>
+            <App {...props} />
+          </ComponentsProvider>
+        </ThemeProvider>
       )
 
       if (el.hasChildNodes()) {

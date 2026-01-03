@@ -56,6 +56,31 @@
     --shiki-token-string-expression: #86efac;
     --shiki-token-punctuation: #94a3b8;
     --shiki-token-link: #38bdf8;
+
+    /* Surface colors for light mode */
+    --surface-primary: #ffffff;
+    --surface-secondary: #f9fafb;
+    --surface-tertiary: #f3f4f6;
+    --border-primary: #e5e7eb;
+    --border-secondary: #d1d5db;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #6b7280;
+  }
+
+  .dark {
+    /* Surface colors for dark mode */
+    --surface-primary: #0f0f0f;
+    --surface-secondary: #171717;
+    --surface-tertiary: #262626;
+    --border-primary: #262626;
+    --border-secondary: #404040;
+    --text-primary: #fafafa;
+    --text-secondary: #a3a3a3;
+    --text-tertiary: #737373;
+
+    /* Slightly lighter code blocks in dark mode for contrast */
+    --shiki-color-background: #1a1a1a;
   }
 
   html {
@@ -71,6 +96,14 @@
     @apply antialiased bg-white text-gray-800;
     font-family: var(--font-sans);
     font-weight: 400;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Dark mode body - using direct selector for cross-package compatibility */
+  .dark body,
+  :root.dark body {
+    background-color: #0f0f0f;
+    color: #f3f4f6;
   }
 
   /* Headings use heading font */
@@ -129,6 +162,7 @@
   /* Inline code styling */
   .prose :not(pre) > code {
     @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-medium text-gray-800;
+    @apply dark:bg-gray-800 dark:text-gray-200;
   }
 
   .prose :not(pre) > code::before,
@@ -139,6 +173,24 @@
   /* Dark mode inline code */
   .prose-invert :not(pre) > code {
     @apply bg-gray-800;
+  }
+
+  /* Dark mode prose text colors */
+  .dark .prose {
+    --tw-prose-body: theme(colors.gray.300);
+    --tw-prose-headings: theme(colors.white);
+    --tw-prose-lead: theme(colors.gray.400);
+    --tw-prose-bold: theme(colors.white);
+    --tw-prose-counters: theme(colors.gray.400);
+    --tw-prose-bullets: theme(colors.gray.600);
+    --tw-prose-hr: theme(colors.gray.700);
+    --tw-prose-quotes: theme(colors.gray.100);
+    --tw-prose-quote-borders: theme(colors.gray.700);
+    --tw-prose-captions: theme(colors.gray.400);
+    --tw-prose-kbd: theme(colors.white);
+    --tw-prose-kbd-shadows: 0 0 0 theme(colors.gray.100);
+    --tw-prose-th-borders: theme(colors.gray.600);
+    --tw-prose-td-borders: theme(colors.gray.700);
   }
 }
 
@@ -168,6 +220,15 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400;
+}
+
+/* Dark mode scrollbars */
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-700;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
 }
 
 /* Emoji confetti animation */
