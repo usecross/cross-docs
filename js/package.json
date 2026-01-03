@@ -17,8 +17,7 @@
       "development": "./src/ssr.tsx",
       "default": "./dist/ssr.js"
     },
-    "./styles.css": "./src/styles.css",
-    "./tailwind.preset": "./src/tailwind.preset.cjs"
+    "./styles.css": "./src/styles.css"
   },
   "files": [
     "dist",

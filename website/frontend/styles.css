@@ -1,9 +1,23 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 @plugin "@tailwindcss/typography";
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
 
 @import '@usecross/docs/styles.css';
 
-:root {
+/* Scan the library for utility classes */
+@source "../node_modules/@usecross/docs";
+
+/* Override the primary color */
+@theme {
+  --color-primary-50: color-mix(in srgb, #AA5655 10%, white);
+  --color-primary-100: color-mix(in srgb, #AA5655 20%, white);
+  --color-primary-200: color-mix(in srgb, #AA5655 30%, white);
+  --color-primary-300: color-mix(in srgb, #AA5655 50%, white);
+  --color-primary-400: color-mix(in srgb, #AA5655 70%, white);
   --color-primary-500: #AA5655;
+  --color-primary-600: color-mix(in srgb, #AA5655 90%, black);
+  --color-primary-700: color-mix(in srgb, #AA5655 70%, black);
+  --color-primary-800: color-mix(in srgb, #AA5655 50%, black);
+  --color-primary-900: color-mix(in srgb, #AA5655 30%, black);
+  --color-primary-950: color-mix(in srgb, #AA5655 15%, black);
 }

@@ -56,25 +56,40 @@ function FullyCustomPage({ content, nav, currentPath }) {
 
 ## Theming
 
-Customize colors by extending the Tailwind theme:
+Customize colors using Tailwind CSS v4's `@theme` block in your CSS:
 
-```javascript
-// tailwind.config.js
-module.exports = {
-  presets: [docsPreset],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#22c55e',
-          600: '#16a34a',
-          900: '#14532d',
-        },
-      },
-    },
-  },
+```css
+/* styles.css */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+@import '@usecross/docs/styles.css';
+@source "../node_modules/@usecross/docs";
+
+@theme {
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #bbf7d0;
+  --color-primary-300: #86efac;
+  --color-primary-400: #4ade80;
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  --color-primary-700: #15803d;
+  --color-primary-800: #166534;
+  --color-primary-900: #14532d;
+  --color-primary-950: #052e16;
+}
+```
+
+You can also use `color-mix()` to generate shades from a single base color:
+
+```css
+@theme {
+  --color-primary-50: color-mix(in srgb, #22c55e 10%, white);
+  --color-primary-100: color-mix(in srgb, #22c55e 20%, white);
+  --color-primary-500: #22c55e;
+  --color-primary-600: color-mix(in srgb, #22c55e 90%, black);
+  --color-primary-900: color-mix(in srgb, #22c55e 30%, black);
 }
 ```
 
