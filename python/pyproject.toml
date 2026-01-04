@@ -1,6 +1,6 @@
 [project]
 name = "cross-docs"
-version = "0.10.1"
+version = "0.10.2"
 description = "Documentation framework built on Cross-Inertia"
 readme = "README.md"
 requires-python = ">=3.10"
