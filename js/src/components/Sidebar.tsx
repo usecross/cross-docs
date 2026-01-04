@@ -1,13 +1,22 @@
 import { Link } from '@inertiajs/react'
 import { cn } from '../lib/utils'
+import { DocSetSelector } from './DocSetSelector'
 import type { SidebarProps } from '../types'
 
 /**
  * Documentation sidebar with section-based navigation.
+ * In multi-docs mode, includes a dropdown selector at the top.
  */
-export function Sidebar({ nav, currentPath, className }: SidebarProps) {
+export function Sidebar({ nav, currentPath, className, docSets, currentDocSet }: SidebarProps) {
   return (
-    <nav className={cn('space-y-8', className)}>
+    <nav className={cn('space-y-6', className)}>
+      {/* Doc Set Selector - only shown in multi-docs mode */}
+      {docSets && docSets.length > 1 && (
+        <DocSetSelector docSets={docSets} currentDocSet={currentDocSet ?? ''} className="mb-6" />
+      )}
+
+      {/* Navigation Sections */}
+      <div className="space-y-8">
       {nav.map((section) => (
         <div key={section.title}>
           <h3 className="mb-3 text-xs font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
@@ -32,6 +41,7 @@ export function Sidebar({ nav, currentPath, className }: SidebarProps) {
           </ul>
         </div>
       ))}
+      </div>
     </nav>
   )
 }

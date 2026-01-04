@@ -13,7 +13,7 @@ from .middleware import wants_markdown
 from .navigation import generate_nav
 
 if TYPE_CHECKING:
-    from .config import DocsConfig
+    from .config import DocSet, DocsConfig
 
 
 class CrossDocs:
@@ -66,6 +66,9 @@ class CrossDocs:
         self.home_component = home_component or config.home.component
         self._router: APIRouter | None = None
         self._nav: list[dict] | None = None
+        # Multi-docs support
+        self._doc_sets_meta: list[dict] | None = None
+        self._nav_by_slug: dict[str, list[dict]] | None = None
 
     @property
     def nav(self) -> list[dict]:
@@ -93,6 +96,17 @@ class CrossDocs:
         """Build the router and navigation."""
         config = self.config
 
+        if config.doc_sets:
+            # Multi-docs mode
+            self._build_multi_docs()
+        else:
+            # Single-docs mode (original behavior)
+            self._build_single_docs()
+
+    def _build_single_docs(self) -> None:
+        """Build router for single documentation set (original behavior)."""
+        config = self.config
+
         # Generate navigation
         self._nav = generate_nav(
             config.content_dir / "docs",
@@ -113,6 +127,141 @@ class CrossDocs:
         self._router = APIRouter()
         self._add_home_route()
         self._router.include_router(docs_router)
+
+    def _build_multi_docs(self) -> None:
+        """Build router for multiple documentation sets."""
+        config = self.config
+        assert config.doc_sets is not None
+
+        # Build navigation and metadata for each doc set
+        self._doc_sets_meta = []
+        self._nav_by_slug = {}
+
+        for doc_set in config.doc_sets:
+            # Determine content path for this doc set
+            if doc_set.content_subdir:
+                content_path = config.content_dir / "docs" / doc_set.content_subdir
+            else:
+                content_path = config.content_dir / "docs"
+
+            # Determine URL prefix for this doc set
+            if doc_set.slug:
+                base_path = f"{config.prefix}/{doc_set.slug}"
+            else:
+                base_path = config.prefix
+
+            # Generate nav for this doc set
+            nav = generate_nav(
+                content_path,
+                base_path=base_path,
+                section_order=doc_set.section_order or config.section_order,
+                index_page=doc_set.index_page,
+            )
+
+            self._nav_by_slug[doc_set.slug] = nav
+
+            self._doc_sets_meta.append({
+                "name": doc_set.name,
+                "slug": doc_set.slug,
+                "description": doc_set.description,
+                "icon": doc_set.icon,
+                "iconUrl": doc_set.icon_url,
+                "prefix": base_path,
+            })
+
+        # Use first doc set's nav as default (for backwards compat with nav property)
+        if config.doc_sets:
+            self._nav = self._nav_by_slug.get(config.doc_sets[0].slug, [])
+
+        # Create parent router
+        self._router = APIRouter()
+
+        if config.home.enabled:
+            self._add_home_route()
+
+        # Add routes for each doc set (non-empty slugs first to avoid catch-all issues)
+        sorted_doc_sets = sorted(config.doc_sets, key=lambda ds: (ds.slug == "", ds.slug))
+        for doc_set in sorted_doc_sets:
+            self._create_docset_routes(doc_set)
+
+    def _create_docset_routes(self, doc_set: "DocSet") -> None:
+        """Create routes for a single doc set in multi-docs mode."""
+        config = self.config
+        docs_component = self.docs_component
+
+        # Get navigation for this doc set
+        nav = self._nav_by_slug[doc_set.slug]  # type: ignore
+        doc_sets_meta = self._doc_sets_meta
+        current_slug = doc_set.slug
+
+        # Determine content path
+        if doc_set.content_subdir:
+            content_subpath = f"docs/{doc_set.content_subdir}"
+        else:
+            content_subpath = "docs"
+
+        content_dir = config.content_dir
+
+        # Determine route prefix
+        if doc_set.slug:
+            route_prefix = f"{config.prefix}/{doc_set.slug}"
+        else:
+            route_prefix = config.prefix
+
+        def share_data(request: Request) -> dict:
+            """Shared data available on all pages."""
+            data: dict[str, Any] = {
+                "nav": nav,
+                "currentPath": str(request.url.path),
+                "docSets": doc_sets_meta,
+                "currentDocSet": current_slug,
+            }
+            if config.logo_url:
+                data["logoUrl"] = config.logo_url
+            if config.logo_inverted_url:
+                data["logoInvertedUrl"] = config.logo_inverted_url
+            data["footerLogoUrl"] = config.footer_logo_url or config.logo_url
+            data["footerLogoInvertedUrl"] = config.footer_logo_inverted_url or config.logo_inverted_url
+            if config.github_url:
+                data["githubUrl"] = config.github_url
+            if config.nav_links:
+                data["navLinks"] = config.nav_links
+            return data
+
+        @self._router.get(f"{route_prefix}/{{path:path}}", tags=["docs"])  # type: ignore
+        async def docs_page(
+            path: str,
+            request: Request,
+            inertia: InertiaDep,
+            _content_subpath: str = content_subpath,
+            _index_page: str = doc_set.index_page,
+            _share_data: Any = share_data,
+        ):
+            """Serve a docs page by path."""
+            path = path.rstrip("/")
+            if not path:
+                path = _index_page
+
+            doc_path = f"{_content_subpath}/{path}"
+
+            # Return raw markdown if requested
+            if config.enable_markdown_response and wants_markdown(request):
+                return PlainTextResponse(
+                    load_raw_markdown(content_dir, doc_path),
+                    media_type="text/markdown",
+                )
+
+            content = load_markdown(content_dir, doc_path)
+            props = {
+                "content": content,
+                **_share_data(request),
+            }
+
+            return inertia.render(
+                docs_component,
+                props,
+                view_data={"page_title": content["title"]},
+            )
 
     def _create_docs_router(self) -> APIRouter:
         """Create the docs router."""

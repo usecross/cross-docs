@@ -16,6 +16,18 @@ export interface NavSection {
   items: NavItem[]
 }
 
+/** Documentation set metadata (for multi-docs mode) */
+export interface DocSetMeta {
+  name: string
+  slug: string
+  description: string
+  /** Emoji or short text icon (e.g., "🍓") */
+  icon?: string
+  /** URL to icon image */
+  iconUrl?: string
+  prefix: string
+}
+
 /** Shared props passed to all pages via Inertia */
 export interface SharedProps {
   nav: NavSection[]
@@ -32,6 +44,10 @@ export interface SharedProps {
   githubUrl?: string
   /** Additional navigation links (from Python backend) */
   navLinks?: Array<{ label: string; href: string }>
+  /** Available documentation sets (multi-docs mode) */
+  docSets?: DocSetMeta[]
+  /** Current documentation set slug (multi-docs mode) */
+  currentDocSet?: string
 }
 
 /** Document content structure */
@@ -67,6 +83,10 @@ export interface SidebarProps {
   nav: NavSection[]
   currentPath: string
   className?: string
+  /** Available documentation sets (multi-docs mode) */
+  docSets?: DocSetMeta[]
+  /** Current documentation set slug (multi-docs mode) */
+  currentDocSet?: string
 }
 
 /** Props for Markdown component */
