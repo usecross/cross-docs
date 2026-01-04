@@ -13,6 +13,9 @@
  * Note: The Google Fonts import must come before other imports to avoid CSS ordering warnings.
  */
 
+/* Enable class-based dark mode (using .dark class on root element) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Theme customizations for Tailwind v4 */
 @theme {
   /* Max width */

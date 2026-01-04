@@ -132,7 +132,9 @@ export function DocSetSelector({ docSets, currentDocSet, className }: DocSetSele
       >
         {/* Icon */}
         <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center text-gray-600 dark:text-gray-400">
-          {current.iconUrl ? (
+          {current.icon ? (
+            <span className="text-base leading-none">{current.icon}</span>
+          ) : current.iconUrl ? (
             <img src={current.iconUrl} alt="" className="w-5 h-5" />
           ) : (
             <PackageIcon className="w-5 h-5" />
@@ -191,7 +193,9 @@ export function DocSetSelector({ docSets, currentDocSet, className }: DocSetSele
                   ? 'text-primary-600 dark:text-primary-400'
                   : 'text-gray-500 dark:text-gray-400'
               )}>
-                {docSet.iconUrl ? (
+                {docSet.icon ? (
+                  <span className="text-base leading-none">{docSet.icon}</span>
+                ) : docSet.iconUrl ? (
                   <img src={docSet.iconUrl} alt="" className="w-5 h-5" />
                 ) : (
                   <PackageIcon className="w-5 h-5" />

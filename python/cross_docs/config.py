@@ -38,7 +38,8 @@ class DocSet:
     name: str
     slug: str = ""  # URL slug (empty = root prefix, e.g., "django" -> /docs/django/)
     description: str = ""
-    icon_url: str | None = None
+    icon: str | None = None  # Emoji or short text icon (e.g., "🍓")
+    icon_url: str | None = None  # URL to icon image
     content_subdir: str = ""  # Subdirectory within content_dir/docs/
     index_page: str = "introduction"
     section_order: list[str] | None = None

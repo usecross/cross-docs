@@ -164,6 +164,7 @@ class CrossDocs:
                 "name": doc_set.name,
                 "slug": doc_set.slug,
                 "description": doc_set.description,
+                "icon": doc_set.icon,
                 "iconUrl": doc_set.icon_url,
                 "prefix": base_path,
             })

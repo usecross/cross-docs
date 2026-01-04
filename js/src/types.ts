@@ -21,6 +21,9 @@ export interface DocSetMeta {
   name: string
   slug: string
   description: string
+  /** Emoji or short text icon (e.g., "🍓") */
+  icon?: string
+  /** URL to icon image */
   iconUrl?: string
   prefix: string
 }

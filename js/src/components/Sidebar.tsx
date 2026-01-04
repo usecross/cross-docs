@@ -12,7 +12,7 @@ export function Sidebar({ nav, currentPath, className, docSets, currentDocSet }:
     <nav className={cn('space-y-6', className)}>
       {/* Doc Set Selector - only shown in multi-docs mode */}
       {docSets && docSets.length > 1 && (
-        <DocSetSelector docSets={docSets} currentDocSet={currentDocSet ?? ''} className="mb-4" />
+        <DocSetSelector docSets={docSets} currentDocSet={currentDocSet ?? ''} className="mb-6" />
       )}
 
       {/* Navigation Sections */}

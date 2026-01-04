@@ -140,16 +140,16 @@ export function DocsLayout({
 
       {/* Main content area */}
       <div className="bg-white dark:bg-[#0f0f0f] pt-16 w-full flex-1 transition-colors">
-        <div className="grid grid-cols-12">
-          {/* Desktop sidebar */}
-          <aside className="hidden lg:block lg:col-span-3 xl:col-span-2 border-r border-gray-200 dark:border-gray-800 min-h-[calc(100vh-4rem)] transition-colors">
-            <nav className="sticky top-16 px-4 lg:px-6 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="flex">
+          {/* Desktop sidebar - fixed width */}
+          <aside className="hidden lg:block w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 min-h-[calc(100vh-4rem)] transition-colors">
+            <nav className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
               <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
             </nav>
           </aside>
 
           {/* Main content */}
-          <main className="col-span-12 lg:col-span-9 xl:col-span-10 p-4 lg:px-10 lg:py-6">
+          <main className="flex-1 min-w-0 p-4 lg:px-10 lg:py-6">
             <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none dark:prose-headings:text-white dark:prose-strong:text-white dark:text-gray-300">
               {children}
             </article>
