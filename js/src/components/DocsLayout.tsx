@@ -145,7 +145,7 @@ export function DocsLayout({
         <div className="flex">
           {/* Desktop sidebar - fixed width */}
           <aside className="hidden lg:block w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 min-h-[calc(100vh-4rem)] transition-colors">
-            <nav className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <nav className="sticky top-16 px-4 lg:px-10 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
               <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
             </nav>
           </aside>

@@ -166,7 +166,7 @@ export function TableOfContents({ items, className = '' }: TableOfContentsProps)
                 className={`block border-l-2 py-1.5 ${indent} -ml-0.5 text-sm transition-colors ${
                   isActive
                     ? 'border-primary-500 text-gray-900 dark:text-white font-bold'
-                    : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white'
+                    : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {item.text}

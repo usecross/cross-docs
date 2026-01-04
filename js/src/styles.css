@@ -203,7 +203,8 @@
     font-style: normal;
     quotes: none;
     background-color: rgb(241 245 249 / 0.8);
-    border-left-color: rgb(148 163 184);
+    border-left-color: var(--color-primary-400);
+    --tw-prose-quote-borders: var(--color-primary-400);
   }
 
   .prose blockquote p {
@@ -221,7 +222,8 @@
   /* Dark mode blockquote */
   .dark .prose blockquote {
     background-color: rgb(51 65 85 / 0.15);
-    border-left-color: rgb(100 116 139);
+    border-left-color: var(--color-primary-500);
+    --tw-prose-quote-borders: var(--color-primary-500);
   }
 
   .dark .prose blockquote p {
