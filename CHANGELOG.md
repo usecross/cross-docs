@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+0.8.1 - 2026-01-04
+------------------
+
+# Consistent TOC styling
+
+Updated the "On this page" table of contents component to use the same visual styles as the sidebar navigation for a more cohesive look.
+
 0.8.0 - 2026-01-04
 ------------------
 
