@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+0.10.1 - 2026-01-04
+-------------------
+
+# Increase sidebar font size
+
+Improved readability of the documentation sidebar navigation by increasing font size from 14px to 16px and adding more vertical spacing between items.
+
 0.10.0 - 2026-01-04
 -------------------
 

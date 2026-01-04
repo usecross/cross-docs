@@ -1,6 +1,6 @@
 [project]
 name = "cross-docs-monorepo"
-version = "0.10.0"
+version = "0.10.1"
 description = "Cross-docs monorepo (not published)"
 requires-python = ">=3.10"
 
