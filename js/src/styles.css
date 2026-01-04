@@ -195,6 +195,46 @@
     --tw-prose-th-borders: theme(colors.gray.600);
     --tw-prose-td-borders: theme(colors.gray.700);
   }
+
+  /* Blockquote styling - matches alert block aesthetic */
+  .prose blockquote {
+    @apply my-6 border-l-[3px] py-4 px-5 rounded-r-lg;
+    @apply not-italic;
+    font-style: normal;
+    quotes: none;
+    background-color: rgb(241 245 249 / 0.8);
+    border-left-color: rgb(148 163 184);
+  }
+
+  .prose blockquote p {
+    @apply text-gray-600 leading-relaxed;
+  }
+
+  .prose blockquote p:first-child {
+    @apply mt-0;
+  }
+
+  .prose blockquote p:last-child {
+    @apply mb-0;
+  }
+
+  /* Dark mode blockquote */
+  .dark .prose blockquote {
+    background-color: rgb(51 65 85 / 0.15);
+    border-left-color: rgb(100 116 139);
+  }
+
+  .dark .prose blockquote p {
+    @apply text-gray-300;
+  }
+
+  .dark .prose blockquote strong {
+    @apply text-white;
+  }
+
+  .dark .prose blockquote code {
+    @apply bg-slate-700/50 text-slate-200;
+  }
 }
 
 /* Syntax highlighting - rounded corners like Starlight */
@@ -232,6 +272,179 @@
 
 .dark ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-600;
+}
+
+/* GitHub-style alerts - refined for Cross aesthetic */
+.markdown-alert {
+  @apply my-6 border-l-[3px] pt-2 pb-4 px-5 rounded-r-lg;
+  background-color: var(--alert-bg);
+}
+
+.markdown-alert > p {
+  @apply text-gray-600 dark:text-gray-300 leading-relaxed;
+}
+
+.markdown-alert > p:last-child {
+  @apply mb-0;
+}
+
+.markdown-alert-title {
+  @apply mb-3 flex items-center gap-2.5 text-sm font-semibold tracking-wide uppercase;
+}
+
+.markdown-alert-title svg {
+  @apply h-[18px] w-[18px] flex-shrink-0;
+  color: currentColor;
+  fill: currentColor;
+}
+
+/* Note alert - muted slate blue */
+.markdown-alert-note {
+  --alert-bg: rgb(241 245 249 / 0.8);
+  @apply border-slate-400;
+}
+
+.dark .markdown-alert-note {
+  --alert-bg: rgb(51 65 85 / 0.15);
+  @apply border-slate-500;
+}
+
+.markdown-alert-note .markdown-alert-title {
+  @apply text-slate-600 dark:text-slate-400;
+}
+
+/* Tip alert - muted sage/olive green (matches site accent) */
+.markdown-alert-tip {
+  --alert-bg: rgb(236 243 230 / 0.8);
+  @apply border-[#7b8c64];
+}
+
+.dark .markdown-alert-tip {
+  --alert-bg: rgb(107 124 79 / 0.1);
+  @apply border-[#8a9b72];
+}
+
+.markdown-alert-tip .markdown-alert-title {
+  @apply text-[#5c6b4a] dark:text-[#a3b38f];
+}
+
+/* Important alert - muted indigo/violet */
+.markdown-alert-important {
+  --alert-bg: rgb(243 242 252 / 0.8);
+  @apply border-indigo-400;
+}
+
+.dark .markdown-alert-important {
+  --alert-bg: rgb(99 102 241 / 0.08);
+  @apply border-indigo-500;
+}
+
+.markdown-alert-important .markdown-alert-title {
+  @apply text-indigo-600 dark:text-indigo-400;
+}
+
+/* Warning alert - muted ochre/amber */
+.markdown-alert-warning {
+  --alert-bg: rgb(254 249 236 / 0.9);
+  @apply border-amber-500/80;
+}
+
+.dark .markdown-alert-warning {
+  --alert-bg: rgb(245 158 11 / 0.08);
+  @apply border-amber-500/60;
+}
+
+.markdown-alert-warning .markdown-alert-title {
+  @apply text-amber-700 dark:text-amber-400;
+}
+
+/* Caution alert - muted terracotta/rust */
+.markdown-alert-caution {
+  --alert-bg: rgb(254 242 239 / 0.9);
+  @apply border-rose-400;
+}
+
+.dark .markdown-alert-caution {
+  --alert-bg: rgb(244 63 94 / 0.08);
+  @apply border-rose-500/70;
+}
+
+.markdown-alert-caution .markdown-alert-title {
+  @apply text-rose-600 dark:text-rose-400;
+}
+
+/* Task list styling */
+.contains-task-list {
+  @apply list-none pl-0;
+}
+
+.task-list-item {
+  @apply flex items-center gap-2 list-none;
+}
+
+.task-list-item input[type="checkbox"] {
+  @apply h-4 w-4 flex-shrink-0;
+}
+
+/* Footnote reference styling */
+.footnote-ref {
+  @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
+  @apply text-sm font-medium no-underline;
+}
+
+.footnote-ref::before {
+  content: '[';
+}
+
+.footnote-ref::after {
+  content: ']';
+}
+
+/* Footnote back reference */
+.footnote-backref {
+  @apply ml-1 text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
+  @apply no-underline;
+}
+
+/* Footnote anchor targets - account for fixed header */
+[id^="user-content-fn-"],
+[id^="user-content-fnref-"] {
+  scroll-margin-top: 6rem;
+}
+
+/* Target highlight animation for footnotes */
+[id^="user-content-fn-"]:target,
+[id^="user-content-fnref-"]:target {
+  animation: target-highlight 2s ease-out;
+}
+
+@keyframes target-highlight {
+  0% {
+    background-color: rgb(251 191 36 / 0.4);
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 4px rgb(251 191 36 / 0.4);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
+
+.dark [id^="user-content-fn-"]:target,
+.dark [id^="user-content-fnref-"]:target {
+  animation: target-highlight-dark 2s ease-out;
+}
+
+@keyframes target-highlight-dark {
+  0% {
+    background-color: rgb(251 191 36 / 0.3);
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 4px rgb(251 191 36 / 0.3);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 4px transparent;
+  }
 }
 
 /* Emoji confetti animation */
