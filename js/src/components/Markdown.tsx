@@ -1,5 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkEmoji from 'remark-emoji'
+import { remarkAlert } from 'remark-github-blockquote-alert'
 import rehypeRaw from 'rehype-raw'
 import { CodeBlock } from './CodeBlock'
 import type { MarkdownProps } from '../types'
@@ -48,7 +50,7 @@ export function Markdown({ content, components }: MarkdownProps) {
 
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={[remarkGfm, remarkEmoji, remarkAlert]}
       rehypePlugins={[rehypeRaw]}
       components={{
         ...lowercaseComponents,
@@ -88,13 +90,14 @@ export function Markdown({ content, components }: MarkdownProps) {
           )
         },
         // Custom link styling
-        a({ href, children }) {
+        a({ href, children, node, ...props }) {
           const isExternal = href?.startsWith('http')
           return (
             <a
               href={href}
               className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
               {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              {...props}
             >
               {children}
             </a>
@@ -140,6 +143,35 @@ export function Markdown({ content, components }: MarkdownProps) {
               {children}
             </h3>
           )
+        },
+        // Task list checkbox styling
+        input({ type, checked, disabled, ...props }) {
+          if (type === 'checkbox') {
+            return (
+              <input
+                type="checkbox"
+                checked={checked}
+                disabled={disabled}
+                className="mr-2 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700"
+                {...props}
+              />
+            )
+          }
+          return <input type={type} checked={checked} disabled={disabled} {...props} />
+        },
+        // Footnote section styling
+        section({ className, children, ...props }) {
+          if (className?.includes('footnotes')) {
+            return (
+              <section
+                className="mt-8 border-t border-gray-200 pt-6 text-sm text-gray-600 dark:border-gray-700 dark:text-gray-400"
+                {...props}
+              >
+                {children}
+              </section>
+            )
+          }
+          return <section className={className} {...props}>{children}</section>
         },
       }}
     >
