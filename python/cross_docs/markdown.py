@@ -1,8 +1,67 @@
 """Markdown parsing utilities for cross-docs."""
 
+import re
 from pathlib import Path
 
 from fastapi import HTTPException
+
+
+def slugify(text: str) -> str:
+    """Convert heading text to URL-safe slug.
+
+    Args:
+        text: Heading text to slugify
+
+    Returns:
+        URL-safe slug (e.g., "Browser Support" -> "browser-support")
+    """
+    # Convert to lowercase
+    slug = text.lower()
+    # Replace spaces and underscores with hyphens
+    slug = re.sub(r"[\s_]+", "-", slug)
+    # Remove characters that aren't alphanumeric or hyphens
+    slug = re.sub(r"[^a-z0-9-]", "", slug)
+    # Remove multiple consecutive hyphens
+    slug = re.sub(r"-+", "-", slug)
+    # Remove leading/trailing hyphens
+    slug = slug.strip("-")
+    return slug
+
+
+def extract_toc(body: str) -> list[dict]:
+    """Extract table of contents from markdown body.
+
+    Extracts H2 and H3 headings and generates slug IDs for anchor links.
+
+    Args:
+        body: Markdown body content (without frontmatter)
+
+    Returns:
+        List of TOC items with id, text, and level
+    """
+    toc = []
+
+    # Match markdown headings: ## Heading or ### Heading
+    # Avoid matching inside code blocks by checking line start
+    heading_pattern = re.compile(r"^(#{2,3})\s+(.+)$", re.MULTILINE)
+
+    for match in heading_pattern.finditer(body):
+        hashes = match.group(1)
+        text = match.group(2).strip()
+
+        # Skip empty headings
+        if not text:
+            continue
+
+        level = len(hashes)  # 2 for ##, 3 for ###
+
+        toc.append({
+            "id": slugify(text),
+            "text": text,
+            "level": level,
+        })
+
+    return toc
 
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
@@ -54,6 +113,7 @@ def load_markdown(content_dir: Path, path: str) -> dict:
         "title": frontmatter.get("title", "Untitled"),
         "description": frontmatter.get("description", ""),
         "body": body,
+        "toc": extract_toc(body),
     }
 
 
