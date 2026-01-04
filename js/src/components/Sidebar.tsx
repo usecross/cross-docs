@@ -22,13 +22,13 @@ export function Sidebar({ nav, currentPath, className, docSets, currentDocSet }:
           <h3 className="mb-3 text-xs font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
             {section.title}
           </h3>
-          <ul className="space-y-1 border-l-2 border-gray-200 dark:border-gray-700">
+          <ul className="space-y-2 border-l-2 border-gray-200 dark:border-gray-700">
             {section.items.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    'block border-l-2 py-1.5 pl-4 text-sm transition-colors -ml-0.5',
+                    'block border-l-2 py-2 pl-4 text-base transition-colors -ml-0.5',
                     currentPath === item.href
                       ? 'border-primary-500 text-gray-900 dark:text-white font-bold'
                       : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white'
