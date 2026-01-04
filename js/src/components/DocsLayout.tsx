@@ -54,7 +54,7 @@ export function DocsLayout({
   footer,
 }: DocsLayoutProps) {
   const sharedProps = usePage<{ props: SharedProps }>().props as unknown as SharedProps
-  const { nav, currentPath } = sharedProps
+  const { nav, currentPath, docSets, currentDocSet } = sharedProps
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { resolvedTheme } = useTheme()
 
@@ -133,7 +133,7 @@ export function DocsLayout({
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="fixed inset-0 bg-black/50 dark:bg-black/70" onClick={() => setMobileMenuOpen(false)} />
           <div className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white dark:bg-[#0f0f0f] px-4 lg:px-10 py-6 pt-20 border-r border-gray-200 dark:border-gray-800 transition-colors">
-            <Sidebar nav={nav} currentPath={currentPath} />
+            <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
           </div>
         </div>
       )}
@@ -144,7 +144,7 @@ export function DocsLayout({
           {/* Desktop sidebar */}
           <aside className="hidden lg:block lg:col-span-3 xl:col-span-2 border-r border-gray-200 dark:border-gray-800 min-h-[calc(100vh-4rem)] transition-colors">
             <nav className="sticky top-16 px-4 lg:px-10 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
-              <Sidebar nav={nav} currentPath={currentPath} />
+              <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
             </nav>
           </aside>
 

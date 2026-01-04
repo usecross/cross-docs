@@ -1,6 +1,7 @@
 // Components
 export {
   CodeBlock,
+  DocSetSelector,
   DocsLayout,
   DocsPage,
   EmojiConfetti,
@@ -37,6 +38,7 @@ export type {
   DocContent,
   DocsAppConfig,
   DocsLayoutProps,
+  DocSetMeta,
   MarkdownProps,
   NavItem,
   NavSection,

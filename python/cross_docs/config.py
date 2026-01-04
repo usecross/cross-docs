@@ -11,6 +11,40 @@ except ImportError:
 
 
 @dataclass
+class DocSet:
+    """Configuration for a single documentation set.
+
+    Used in multi-docs mode to define separate documentation collections
+    that users can switch between (e.g., "Strawberry" and "Strawberry Django").
+
+    Example in pyproject.toml:
+        [[tool.cross-docs.doc_sets]]
+        name = "Strawberry"
+        slug = ""  # Empty slug means root: /docs/
+        description = "GraphQL library for Python"
+        icon_url = "/static/strawberry.svg"
+        content_subdir = "strawberry"
+        index_page = "introduction"
+        section_order = ["Getting Started", "Guide", "API"]
+
+        [[tool.cross-docs.doc_sets]]
+        name = "Strawberry Django"
+        slug = "django"  # Results in: /docs/django/
+        description = "Django integration for Strawberry"
+        icon_url = "/static/django.svg"
+        content_subdir = "strawberry-django"
+    """
+
+    name: str
+    slug: str = ""  # URL slug (empty = root prefix, e.g., "django" -> /docs/django/)
+    description: str = ""
+    icon_url: str | None = None
+    content_subdir: str = ""  # Subdirectory within content_dir/docs/
+    index_page: str = "introduction"
+    section_order: list[str] | None = None
+
+
+@dataclass
 class HomeFeature:
     """A feature item for the homepage."""
 
@@ -93,6 +127,8 @@ class DocsConfig:
     component: str = "docs/DocsPage"
     enable_markdown_response: bool = True
     home: HomeConfig = field(default_factory=HomeConfig)
+    # Multi-docs support (optional)
+    doc_sets: list[DocSet] | None = None
 
 
 def load_config(
@@ -152,6 +188,10 @@ def load_config(
     # Handle home config specially - convert dict to HomeConfig
     if "home" in merged and isinstance(merged["home"], dict):
         merged["home"] = HomeConfig(**merged["home"])
+
+    # Handle doc_sets specially - convert list of dicts to list of DocSet
+    if "doc_sets" in merged and isinstance(merged["doc_sets"], list):
+        merged["doc_sets"] = [DocSet(**ds) for ds in merged["doc_sets"]]
 
     return DocsConfig(**merged)
 

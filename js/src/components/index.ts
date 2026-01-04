@@ -1,4 +1,5 @@
 export { CodeBlock, InlineCode } from './CodeBlock'
+export { DocSetSelector } from './DocSetSelector'
 export { DocsLayout } from './DocsLayout'
 export { DocsPage } from './DocsPage'
 export { EmojiConfetti } from './EmojiConfetti'
