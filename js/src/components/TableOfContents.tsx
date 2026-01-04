@@ -150,10 +150,10 @@ export function TableOfContents({ items, className = '' }: TableOfContentsProps)
 
   return (
     <nav className={className}>
-      <h5 className="mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
+      <h3 className="mb-3 text-xs font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
         On this page
-      </h5>
-      <ul className="space-y-2.5 text-sm border-l border-gray-200 dark:border-gray-700">
+      </h3>
+      <ul className="space-y-1 border-l-2 border-gray-200 dark:border-gray-700">
         {items.map((item) => {
           const isActive = activeId === item.id
           const indent = item.level === 3 ? 'pl-6' : 'pl-4'
@@ -163,10 +163,10 @@ export function TableOfContents({ items, className = '' }: TableOfContentsProps)
               <a
                 href={`#${item.id}`}
                 onClick={(e) => handleClick(e, item.id)}
-                className={`block ${indent} -ml-px border-l transition-colors ${
+                className={`block border-l-2 py-1.5 ${indent} -ml-0.5 text-sm transition-colors ${
                   isActive
-                    ? 'border-primary-500 text-primary-600 dark:text-primary-400'
-                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'border-primary-500 text-gray-900 dark:text-white font-bold'
+                    : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {item.text}
