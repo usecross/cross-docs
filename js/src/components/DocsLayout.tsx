@@ -150,49 +150,54 @@ export function DocsLayout({
             </nav>
           </aside>
 
-          {/* Main content */}
-          <main className="flex-1 min-w-0 p-4 lg:px-10 lg:py-6">
-            <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none dark:prose-headings:text-white dark:prose-strong:text-white dark:text-gray-300">
-              {children}
-            </article>
-          </main>
+          {/* Right section: content + TOC + footer (not under left sidebar) */}
+          <div className="flex-1 min-w-0 flex flex-col">
+            <div className="flex flex-1">
+              {/* Main content */}
+              <main className="flex-1 min-w-0 p-4 lg:px-10 lg:py-6">
+                <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none dark:prose-headings:text-white dark:prose-strong:text-white dark:text-gray-300">
+                  {children}
+                </article>
+              </main>
 
-          {/* Table of Contents - desktop only */}
-          {toc && toc.length > 0 && (
-            <aside className="hidden xl:block w-64 flex-shrink-0 min-h-[calc(100vh-4rem)] transition-colors">
-              <div className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
-                <TableOfContents items={toc} />
-              </div>
-            </aside>
-          )}
-        </div>
-      </div>
-
-      {/* Footer */}
-      {footer || (
-        <footer className="border-t border-gray-200 dark:border-gray-800 py-8 bg-white dark:bg-[#0f0f0f] transition-colors">
-          <div className="px-4 lg:px-10 flex flex-col md:flex-row justify-between items-center gap-6">
-            {footerLogo && <Link href="/">{footerLogo}</Link>}
-            <div className="flex gap-8 text-sm text-gray-600 dark:text-gray-400">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="hover:text-black dark:hover:text-white transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-              {githubUrl && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-black dark:hover:text-white transition-colors"
-                >
-                  GitHub
-                </a>
+              {/* Table of Contents - desktop only */}
+              {toc && toc.length > 0 && (
+                <aside className="hidden xl:block w-64 flex-shrink-0 transition-colors">
+                  <div className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
+                    <TableOfContents items={toc} />
+                  </div>
+                </aside>
               )}
             </div>
+
+            {/* Footer - spans from after sidebar to right edge */}
+            {footer || (
+              <footer className="border-t border-gray-200 dark:border-gray-800 py-8 px-4 lg:px-10 transition-colors">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                  {footerLogo && <Link href="/">{footerLogo}</Link>}
+                  <div className="flex gap-8 text-sm text-gray-600 dark:text-gray-400">
+                    {navLinks.map((link) => (
+                      <Link key={link.href} href={link.href} className="hover:text-black dark:hover:text-white transition-colors">
+                        {link.label}
+                      </Link>
+                    ))}
+                    {githubUrl && (
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-black dark:hover:text-white transition-colors"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </footer>
+            )}
           </div>
-        </footer>
-      )}
+        </div>
+      </div>
     </div>
   )
 }
