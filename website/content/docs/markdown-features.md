@@ -87,3 +87,48 @@ Unordered lists:
 - *Italic text*
 - ~~Strikethrough~~
 - `inline code`
+
+## Task Lists
+
+Create interactive checklists:
+
+- [x] Completed task
+- [x] Another completed task
+- [ ] Incomplete task
+- [ ] Another todo item
+
+## Emoji
+
+Use GitHub-style emoji codes:
+
+- :rocket: Launch day!
+- :sparkles: New feature
+- :bug: Bug fix
+- :heart: Love it
+- :warning: Be careful
+
+## Footnotes
+
+Add references with footnotes[^1]. You can also use named footnotes[^note].
+
+[^1]: This is the first footnote.
+[^note]: Named footnotes work great for longer references.
+
+## Alerts
+
+GitHub-style alerts for highlighting important information:
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
