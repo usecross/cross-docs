@@ -1,6 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react'
 import { useState } from 'react'
 import { Sidebar } from './Sidebar'
+import { TableOfContents } from './TableOfContents'
 import { ThemeToggle } from './ThemeToggle'
 import { useTheme } from './ThemeProvider'
 import type { DocsLayoutProps, SharedProps } from '../types'
@@ -52,6 +53,7 @@ export function DocsLayout({
   githubUrl: propGithubUrl,
   navLinks: propNavLinks,
   footer,
+  toc,
 }: DocsLayoutProps) {
   const sharedProps = usePage<{ props: SharedProps }>().props as unknown as SharedProps
   const { nav, currentPath, docSets, currentDocSet } = sharedProps
@@ -154,6 +156,15 @@ export function DocsLayout({
               {children}
             </article>
           </main>
+
+          {/* Table of Contents - desktop only */}
+          {toc && toc.length > 0 && (
+            <aside className="hidden xl:block w-64 flex-shrink-0 min-h-[calc(100vh-4rem)] transition-colors">
+              <div className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
+                <TableOfContents items={toc} />
+              </div>
+            </aside>
+          )}
         </div>
       </div>
 

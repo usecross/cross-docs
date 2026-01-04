@@ -15,7 +15,12 @@ export function DocsPage({ content, ...layoutProps }: DocsPageProps) {
   const { components } = useComponents()
 
   return (
-    <DocsLayout title={content?.title ?? ''} description={content?.description} {...layoutProps}>
+    <DocsLayout
+      title={content?.title ?? ''}
+      description={content?.description}
+      toc={content?.toc}
+      {...layoutProps}
+    >
       <Markdown content={content?.body ?? ''} components={components} />
     </DocsLayout>
   )

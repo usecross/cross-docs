@@ -5,6 +5,32 @@ import { CodeBlock } from './CodeBlock'
 import type { MarkdownProps } from '../types'
 
 /**
+ * Convert heading text to URL-safe slug.
+ * Must match the Python slugify function in markdown.py.
+ */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/**
+ * Extract text content from React children.
+ */
+function getTextContent(children: React.ReactNode): string {
+  if (typeof children === 'string') return children
+  if (typeof children === 'number') return String(children)
+  if (Array.isArray(children)) return children.map(getTextContent).join('')
+  if (children && typeof children === 'object' && 'props' in children) {
+    return getTextContent((children as React.ReactElement).props.children)
+  }
+  return ''
+}
+
+/**
  * Markdown renderer with syntax highlighting and GFM support.
  */
 export function Markdown({ content, components }: MarkdownProps) {
@@ -94,6 +120,25 @@ export function Markdown({ content, components }: MarkdownProps) {
             <td className="border-b border-gray-200 px-4 py-2 dark:border-gray-700">
               {children}
             </td>
+          )
+        },
+        // Headings with anchor IDs for TOC
+        h2({ children }) {
+          const text = getTextContent(children)
+          const id = slugify(text)
+          return (
+            <h2 id={id}>
+              {children}
+            </h2>
+          )
+        },
+        h3({ children }) {
+          const text = getTextContent(children)
+          const id = slugify(text)
+          return (
+            <h3 id={id}>
+              {children}
+            </h3>
           )
         },
       }}

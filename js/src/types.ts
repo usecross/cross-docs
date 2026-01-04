@@ -50,11 +50,19 @@ export interface SharedProps {
   currentDocSet?: string
 }
 
+/** Table of contents item */
+export interface TOCItem {
+  id: string
+  text: string
+  level: number
+}
+
 /** Document content structure */
 export interface DocContent {
   title: string
   description: string
   body: string
+  toc?: TOCItem[]
 }
 
 /** Props for DocsLayout component */
@@ -76,6 +84,14 @@ export interface DocsLayoutProps {
   navLinks?: Array<{ label: string; href: string }>
   /** Custom footer component */
   footer?: ReactNode
+  /** Table of contents items for the current page */
+  toc?: TOCItem[]
+}
+
+/** Props for TableOfContents component */
+export interface TableOfContentsProps {
+  items: TOCItem[]
+  className?: string
 }
 
 /** Props for Sidebar component */

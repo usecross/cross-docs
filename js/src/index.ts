@@ -9,6 +9,7 @@ export {
   InlineCode,
   Markdown,
   Sidebar,
+  TableOfContents,
   ThemeProvider,
   ThemeToggle,
   useTheme,
@@ -44,6 +45,8 @@ export type {
   NavSection,
   SharedProps,
   SidebarProps,
+  TableOfContentsProps,
+  TOCItem,
 } from './types'
 
 export type { Theme, ResolvedTheme } from './components/ThemeProvider'
