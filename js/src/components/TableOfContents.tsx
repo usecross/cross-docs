@@ -5,7 +5,7 @@ import type { TableOfContentsProps } from '../types'
  * Table of contents component with scroll spy functionality.
  * Displays "ON THIS PAGE" sidebar with heading links.
  */
-export function TableOfContents({ items, className = '' }: TableOfContentsProps) {
+export function TableOfContents({ items, className = '', ...props }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>(() => {
     // Initialize with hash from URL if present
     if (typeof window !== 'undefined' && window.location.hash) {
@@ -149,11 +149,11 @@ export function TableOfContents({ items, className = '' }: TableOfContentsProps)
   }
 
   return (
-    <nav className={className}>
-      <h3 className="mb-3 text-xs font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
+    <nav className={className} {...props}>
+      <h3 className="mb-3 text-sm font-mono uppercase tracking-widest text-gray-500 dark:text-gray-400">
         On this page
       </h3>
-      <ul className="space-y-1 border-l-2 border-gray-200 dark:border-gray-700">
+      <ul className="space-y-1.5 border-l-2 border-gray-200 dark:border-gray-700">
         {items.map((item) => {
           const isActive = activeId === item.id
           const indent = item.level === 3 ? 'pl-6' : 'pl-4'
@@ -163,7 +163,7 @@ export function TableOfContents({ items, className = '' }: TableOfContentsProps)
               <a
                 href={`#${item.id}`}
                 onClick={(e) => handleClick(e, item.id)}
-                className={`block border-l-2 py-1.5 ${indent} -ml-0.5 text-sm transition-colors ${
+                className={`block border-l-2 py-1 ${indent} -ml-0.5 text-base leading-snug transition-colors ${
                   isActive
                     ? 'border-primary-500 text-gray-900 dark:text-white font-bold'
                     : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-400 hover:text-gray-900 dark:hover:text-white'
