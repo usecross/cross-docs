@@ -82,6 +82,10 @@ export interface DocsLayoutProps {
   githubUrl?: string
   /** Additional navigation links */
   navLinks?: Array<{ label: string; href: string }>
+  /** Custom header component (replaces entire header). Can be a ReactNode or a function that receives mobile menu props. */
+  header?: ReactNode | ((props: { mobileMenuOpen: boolean; toggleMobileMenu: () => void }) => ReactNode)
+  /** Header height in pixels. Used to calculate content offset. Defaults to 64 (h-16). */
+  headerHeight?: number
   /** Custom footer component */
   footer?: ReactNode
   /** Table of contents items for the current page */
@@ -92,6 +96,7 @@ export interface DocsLayoutProps {
 export interface TableOfContentsProps {
   items: TOCItem[]
   className?: string
+  style: any
 }
 
 /** Props for Sidebar component */

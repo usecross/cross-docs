@@ -6,7 +6,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { useTheme } from './ThemeProvider'
 import type { DocsLayoutProps, SharedProps } from '../types'
 
-function MobileMenuButton({ onClick, isOpen }: { onClick: () => void; isOpen: boolean }) {
+export function MobileMenuButton({ onClick, isOpen }: { onClick: () => void; isOpen: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -52,6 +52,8 @@ export function DocsLayout({
   logoInvertedUrl: propLogoInvertedUrl,
   githubUrl: propGithubUrl,
   navLinks: propNavLinks,
+  header,
+  headerHeight = 64,
   footer,
   toc,
 }: DocsLayoutProps) {
@@ -86,88 +88,102 @@ export function DocsLayout({
       <Head title={title} />
 
       {/* Fixed navigation */}
-      <nav className="fixed w-full z-50 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-colors">
-        <div className="px-4 lg:px-10">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2">
-              <MobileMenuButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)} isOpen={mobileMenuOpen} />
-              {headerLogo ? (
-                <Link href="/" className="flex items-center">
-                  {headerLogo}
-                </Link>
-              ) : (
-                <Link href="/" className="font-bold text-lg text-gray-900 dark:text-white">
-                  Docs
-                </Link>
-              )}
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="-mr-2">
-                <ThemeToggle size="sm" />
+      {(typeof header === 'function'
+        ? header({ mobileMenuOpen, toggleMobileMenu: () => setMobileMenuOpen(!mobileMenuOpen) })
+        : header) || (
+        <nav className="fixed w-full z-50 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 transition-colors">
+          <div className="px-4 lg:px-10">
+            <div className="flex justify-between h-16 items-center">
+              <div className="flex items-center gap-2">
+                <MobileMenuButton onClick={() => setMobileMenuOpen(!mobileMenuOpen)} isOpen={mobileMenuOpen} />
+                {headerLogo ? (
+                  <Link href="/" className="flex items-center">
+                    {headerLogo}
+                  </Link>
+                ) : (
+                  <Link href="/" className="font-bold text-lg text-gray-900 dark:text-white">
+                    Docs
+                  </Link>
+                )}
               </div>
+              <div className="flex items-center gap-6">
+                <div className="-mr-2">
+                  <ThemeToggle size="sm" />
+                </div>
 
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="hidden sm:block text-gray-700 dark:text-gray-300 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {githubUrl && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                  <GitHubIcon />
-                </a>
-              )}
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="hidden sm:block text-gray-700 dark:text-gray-300 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                {githubUrl && (
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    <GitHubIcon />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {/* Mobile sidebar */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="fixed inset-0 bg-black/50 dark:bg-black/70" onClick={() => setMobileMenuOpen(false)} />
-          <div className="fixed inset-y-0 left-0 w-64 overflow-y-auto bg-white dark:bg-[#0f0f0f] px-4 py-6 pt-20 border-r border-gray-200 dark:border-gray-800 transition-colors">
+          <div
+            className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white dark:bg-[#0f0f0f] px-4 py-6 border-r border-gray-200 dark:border-gray-800 transition-colors"
+            style={{ paddingTop: headerHeight + 16 }}
+          >
             <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
           </div>
         </div>
       )}
 
       {/* Main content area */}
-      <div className="bg-white dark:bg-[#0f0f0f] pt-16 w-full flex-1 transition-colors">
+      <div className="bg-white dark:bg-[#0f0f0f] w-full flex-1 transition-colors" style={{ paddingTop: headerHeight }}>
         <div className="flex">
           {/* Desktop sidebar - fixed width */}
-          <aside className="hidden lg:block w-72 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 min-h-[calc(100vh-4rem)] transition-colors">
-            <nav className="sticky top-16 px-4 lg:px-10 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <aside
+            className="hidden lg:block w-[24rem] shrink-0 border-r border-gray-200 dark:border-gray-800 transition-colors"
+            style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
+          >
+            <nav
+              className="sticky px-4 lg:px-10 py-6 overflow-y-auto"
+              style={{ top: headerHeight, maxHeight: `calc(100vh - ${headerHeight}px)` }}
+            >
               <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
             </nav>
           </aside>
 
           {/* Right section: content + TOC + footer (not under left sidebar) */}
           <div className="flex-1 min-w-0 flex flex-col">
-            <div className="flex flex-1">
-              {/* Main content */}
-              <main className="flex-1 min-w-0 p-4 lg:px-10 lg:py-6">
-                <article className="prose prose-lg max-w-3xl prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none dark:prose-headings:text-white dark:prose-strong:text-white dark:text-gray-300">
-                  {children}
-                </article>
-              </main>
+            <div className="flex-1 p-4 lg:px-10 lg:py-6">
+              <div className="flex gap-5">
+                {/* Main content */}
+                <main className="min-w-0 w-full max-w-4xl">
+                  <article className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-3xl prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-10 first:prose-h2:mt-0 prose-h3:text-xl prose-a:text-primary-600 dark:prose-a:text-primary-400 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none dark:prose-headings:text-white dark:prose-strong:text-white dark:text-gray-300">
+                    {children}
+                  </article>
+                </main>
 
-              {/* Table of Contents - desktop only */}
-              {toc && toc.length > 0 && (
-                <aside className="hidden xl:block w-64 flex-shrink-0 transition-colors">
-                  <div className="sticky top-16 px-4 py-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
-                    <TableOfContents items={toc} />
-                  </div>
-                </aside>
-              )}
+                {/* Table of Contents - desktop only */}
+                {toc && toc.length > 0 && (
+                  <aside className="hidden xl:block w-56 shrink-0 transition-colors">
+                    <TableOfContents items={toc} className="sticky overflow-y-auto"
+                      style={{ top: headerHeight + 24, maxHeight: `calc(100vh - ${headerHeight + 24}px)` }} />
+                  </aside>
+                )}
+              </div>
             </div>
 
             {/* Footer - spans from after sidebar to right edge */}

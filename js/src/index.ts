@@ -8,6 +8,7 @@ export {
   HomePage,
   InlineCode,
   Markdown,
+  MobileMenuButton,
   Sidebar,
   TableOfContents,
   ThemeProvider,
