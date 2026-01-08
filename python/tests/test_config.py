@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from cross_docs.config import (
+    APIPluginConfig,
     DocsConfig,
     HomeConfig,
     DocSet,
@@ -147,3 +148,120 @@ class TestDocSet:
         assert docset.icon == "🎸"
         assert docset.content_subdir == "django-docs"
         assert docset.section_order == ["Guide", "API"]
+
+
+class TestAPIPluginConfig:
+    """Tests for the APIPluginConfig dataclass."""
+
+    def test_default_values(self):
+        """Default values are set correctly."""
+        config = APIPluginConfig(plugin="python")
+
+        assert config.plugin == "python"
+        assert config.package is None
+        assert config.output_dir == "api"
+        assert config.prefix == "/api"
+        assert config.docstring_parser == "google"
+        assert config.include_private is False
+        assert config.include_special is True
+        assert config.search_paths is None
+        assert config.component == "api/APIPage"
+
+    def test_custom_values(self):
+        """Custom values override defaults."""
+        config = APIPluginConfig(
+            plugin="python",
+            package="my_package",
+            output_dir="docs/api",
+            prefix="/api/python",
+            docstring_parser="numpy",
+            include_private=True,
+            include_special=False,
+            search_paths=["src"],
+            component="CustomAPIPage",
+        )
+
+        assert config.plugin == "python"
+        assert config.package == "my_package"
+        assert config.output_dir == "docs/api"
+        assert config.prefix == "/api/python"
+        assert config.docstring_parser == "numpy"
+        assert config.include_private is True
+        assert config.include_special is False
+        assert config.search_paths == ["src"]
+        assert config.component == "CustomAPIPage"
+
+    def test_to_dict(self):
+        """to_dict returns all configuration options."""
+        config = APIPluginConfig(
+            plugin="python",
+            package="my_package",
+            docstring_parser="numpy",
+        )
+
+        result = config.to_dict()
+
+        assert result["plugin"] == "python"
+        assert result["package"] == "my_package"
+        assert result["docstring_parser"] == "numpy"
+        assert result["include_private"] is False
+        assert result["include_special"] is True
+        assert "prefix" in result
+        assert "output_dir" in result
+
+
+class TestLoadConfigWithAPI:
+    """Tests for load_config with API configuration."""
+
+    def test_api_config_loaded(self, tmp_path: Path):
+        """API config is loaded as list of APIPluginConfig objects."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""\
+[project]
+name = "test-project"
+
+[tool.cross-docs]
+content_dir = "content"
+
+[[tool.cross-docs.api]]
+plugin = "python"
+package = "my_package"
+docstring_parser = "google"
+""")
+
+        config = load_config(pyproject)
+
+        assert config.api is not None
+        assert len(config.api) == 1
+        assert isinstance(config.api[0], APIPluginConfig)
+        assert config.api[0].plugin == "python"
+        assert config.api[0].package == "my_package"
+        assert config.api[0].docstring_parser == "google"
+
+    def test_multiple_api_configs(self, tmp_path: Path):
+        """Multiple API configs can be loaded."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""\
+[project]
+name = "test-project"
+
+[tool.cross-docs]
+content_dir = "content"
+
+[[tool.cross-docs.api]]
+plugin = "python"
+package = "package_one"
+
+[[tool.cross-docs.api]]
+plugin = "python"
+package = "package_two"
+prefix = "/api/v2"
+""")
+
+        config = load_config(pyproject)
+
+        assert config.api is not None
+        assert len(config.api) == 2
+        assert config.api[0].package == "package_one"
+        assert config.api[1].package == "package_two"
+        assert config.api[1].prefix == "/api/v2"
