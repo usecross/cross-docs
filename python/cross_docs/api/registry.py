@@ -191,14 +191,6 @@ def generate_api(
             "No API plugins configured. Add [[tool.cross-docs.api]] to pyproject.toml"
         )
 
-    # Determine output directory
-    if output_dir is not None:
-        base_output = Path(output_dir)
-    else:
-        base_output = config.content_dir / "api"
-
-    base_output.mkdir(parents=True, exist_ok=True)
-
     results: list[APIDocResult] = []
 
     for api_config in config.api:
@@ -206,9 +198,18 @@ def generate_api(
         if plugins is not None and api_config.plugin not in plugins:
             continue
 
+        # Determine output directory for this plugin
+        # CLI override takes precedence, then config's output_dir
+        if output_dir is not None:
+            plugin_output = Path(output_dir)
+        else:
+            plugin_output = config.content_dir / api_config.output_dir
+
+        plugin_output.mkdir(parents=True, exist_ok=True)
+
         # Create and run plugin
         plugin = registry.create(api_config.plugin, api_config.to_dict())
-        result = plugin.generate(base_output)
+        result = plugin.generate(plugin_output)
         results.append(result)
 
     return results

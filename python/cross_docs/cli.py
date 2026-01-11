@@ -130,10 +130,6 @@ else:
             if parser:
                 api_config.docstring_parser = parser
 
-        # Determine output directory
-        output_dir = output or docs_config.content_dir / "api"
-        output_dir.mkdir(parents=True, exist_ok=True)
-
         # Import registry lazily to avoid import errors if griffe not installed
         try:
             from cross_docs.api.registry import registry
@@ -146,9 +142,17 @@ else:
         for api_config in api_configs:
             click.echo(f"Generating API docs with {api_config.plugin} plugin...")
 
+            # Determine output directory for this plugin
+            # CLI --output flag overrides, otherwise use config's output_dir
+            if output:
+                plugin_output = output
+            else:
+                plugin_output = docs_config.content_dir / api_config.output_dir
+            plugin_output.mkdir(parents=True, exist_ok=True)
+
             try:
                 plugin_instance = registry.create(api_config.plugin, api_config.to_dict())
-                result = plugin_instance.generate(output_dir)
+                result = plugin_instance.generate(plugin_output)
                 results.append(result)
                 click.echo(f"  ✓ Generated: {result.output_path}")
             except ValueError as e:
