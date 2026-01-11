@@ -152,9 +152,37 @@ export function Signature({ fn, showPath = false, className = '' }: SignaturePro
   // Render return type
   const returnType = renderExpression(fn.returns)
 
+  // Build parameter string with proper separators for positional-only and keyword-only
+  const buildParamString = (params: GriffeParameter[]): string => {
+    const parts: string[] = []
+    const hasVarPositional = params.some(p => p.kind === 'var-positional')
+    let addedBareAsterisk = false
+
+    for (let i = 0; i < params.length; i++) {
+      const param = params[i]
+      const nextParam = params[i + 1]
+
+      // Add the parameter itself
+      parts.push(renderParameter(param))
+
+      // Add / after last positional-only parameter
+      if (param.kind === 'positional-only' && nextParam && nextParam.kind !== 'positional-only') {
+        parts.push('/')
+      }
+
+      // Add bare * before first keyword-only parameter (if no *args)
+      if (!hasVarPositional && !addedBareAsterisk && nextParam?.kind === 'keyword-only' && param.kind !== 'keyword-only') {
+        parts.push('*')
+        addedBareAsterisk = true
+      }
+    }
+
+    return parts.join(', ')
+  }
+
   // Build the plain text signature for copying
   const plainSignature = (() => {
-    const params = displayParams.map(renderParameter).join(', ')
+    const params = buildParamString(displayParams)
     const prefix = isAsync ? 'async def ' : 'def '
     return returnType
       ? `${prefix}${name}(${params}) -> ${returnType}`
@@ -166,6 +194,58 @@ export function Signature({ fn, showPath = false, className = '' }: SignaturePro
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  // Build list of parameter tokens (params + separators like / and *)
+  type ParamToken = { type: 'param'; param: GriffeParameter } | { type: 'separator'; value: '/' | '*' }
+  const buildParamTokens = (params: GriffeParameter[]): ParamToken[] => {
+    const tokens: ParamToken[] = []
+    const hasVarPositional = params.some(p => p.kind === 'var-positional')
+    let addedBareAsterisk = false
+
+    for (let i = 0; i < params.length; i++) {
+      const param = params[i]
+      const nextParam = params[i + 1]
+
+      tokens.push({ type: 'param', param })
+
+      // Add / after last positional-only parameter
+      if (param.kind === 'positional-only' && nextParam && nextParam.kind !== 'positional-only') {
+        tokens.push({ type: 'separator', value: '/' })
+      }
+
+      // Add bare * before first keyword-only parameter (if no *args)
+      if (!hasVarPositional && !addedBareAsterisk && nextParam?.kind === 'keyword-only' && param.kind !== 'keyword-only') {
+        tokens.push({ type: 'separator', value: '*' })
+        addedBareAsterisk = true
+      }
+    }
+
+    return tokens
+  }
+
+  const paramTokens = buildParamTokens(displayParams)
+
+  // Render a single parameter element
+  const renderParamElement = (param: GriffeParameter, multiline: boolean) => (
+    <>
+      {param.kind === 'var-positional' && <span className="text-gray-400">*</span>}
+      {param.kind === 'var-keyword' && <span className="text-gray-400">**</span>}
+      <span className="text-orange-300">{param.name}</span>
+      {param.annotation && (
+        <>
+          <span className="text-gray-400">: </span>
+          <span className="text-emerald-400">{renderExpression(param.annotation)}</span>
+        </>
+      )}
+      {param.default && (
+        <>
+          <span className="text-gray-400"> = </span>
+          <span className="text-blue-300">{renderExpression(param.default)}</span>
+        </>
+      )}
+      {multiline && <span className="text-gray-400">,</span>}
+    </>
+  )
 
   // Determine if we need multi-line formatting
   const needsMultiline = displayParams.length > 3
@@ -180,52 +260,35 @@ export function Signature({ fn, showPath = false, className = '' }: SignaturePro
           {' '}
           <span className="text-yellow-300">{name}</span>
           <span className="text-gray-400">(</span>
-          {displayParams.length > 0 && (
+          {paramTokens.length > 0 && (
             needsMultiline ? (
               // Multi-line for many parameters
               <>
-                {displayParams.map((param) => (
-                  <span key={param.name} className="block pl-4">
-                    {param.kind === 'var-positional' && <span className="text-gray-400">*</span>}
-                    {param.kind === 'var-keyword' && <span className="text-gray-400">**</span>}
-                    <span className="text-orange-300">{param.name}</span>
-                    {param.annotation && (
-                      <>
-                        <span className="text-gray-400">: </span>
-                        <span className="text-emerald-400">{renderExpression(param.annotation)}</span>
-                      </>
-                    )}
-                    {param.default && (
-                      <>
-                        <span className="text-gray-400"> = </span>
-                        <span className="text-blue-300">{renderExpression(param.default)}</span>
-                      </>
-                    )}
-                    <span className="text-gray-400">,</span>
-                  </span>
+                {paramTokens.map((token, i) => (
+                  token.type === 'param' ? (
+                    <span key={token.param.name} className="block pl-4">
+                      {renderParamElement(token.param, true)}
+                    </span>
+                  ) : (
+                    <span key={`sep-${i}`} className="block pl-4">
+                      <span className="text-gray-400">{token.value},</span>
+                    </span>
+                  )
                 ))}
               </>
             ) : (
               // Single line for few parameters
-              displayParams.map((param, i) => (
-                <span key={param.name}>
-                  {i > 0 && <span className="text-gray-400">, </span>}
-                  {param.kind === 'var-positional' && <span className="text-gray-400">*</span>}
-                  {param.kind === 'var-keyword' && <span className="text-gray-400">**</span>}
-                  <span className="text-orange-300">{param.name}</span>
-                  {param.annotation && (
-                    <>
-                      <span className="text-gray-400">: </span>
-                      <span className="text-emerald-400">{renderExpression(param.annotation)}</span>
-                    </>
-                  )}
-                  {param.default && (
-                    <>
-                      <span className="text-gray-400"> = </span>
-                      <span className="text-blue-300">{renderExpression(param.default)}</span>
-                    </>
-                  )}
-                </span>
+              paramTokens.map((token, i) => (
+                token.type === 'param' ? (
+                  <span key={token.param.name}>
+                    {i > 0 && <span className="text-gray-400">, </span>}
+                    {renderParamElement(token.param, false)}
+                  </span>
+                ) : (
+                  <span key={`sep-${i}`}>
+                    <span className="text-gray-400">, {token.value}</span>
+                  </span>
+                )
               ))
             )
           )}
