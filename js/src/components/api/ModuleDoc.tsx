@@ -90,12 +90,14 @@ interface ModuleDocProps {
   className?: string
   /** Override display path (e.g., for aliases to show alias name instead of target path) */
   displayPath?: string
+  /** GitHub repository URL for "Open in GitHub" links */
+  githubUrl?: string
 }
 
 /**
  * Renders documentation for a module including its classes, functions, and submodules.
  */
-export function ModuleDoc({ module, prefix = '/api', showFull = true, className = '', displayPath }: ModuleDocProps) {
+export function ModuleDoc({ module, prefix = '/api', showFull = true, className = '', displayPath, githubUrl }: ModuleDocProps) {
   const members = module.members ?? {}
 
   // Separate members by type
@@ -185,7 +187,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
           {showFull ? (
             <div className="space-y-12">
               {classes.map((cls) => (
-                <ClassDoc key={cls.name} cls={cls} prefix={prefix} />
+                <ClassDoc key={cls.name} cls={cls} prefix={prefix} githubUrl={githubUrl} />
               ))}
             </div>
           ) : (
@@ -221,7 +223,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
           {showFull ? (
             <div className="space-y-8">
               {functions.map((fn) => (
-                <FunctionDoc key={fn.name} fn={fn} />
+                <FunctionDoc key={fn.name} fn={fn} githubUrl={githubUrl} />
               ))}
             </div>
           ) : (
