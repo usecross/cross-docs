@@ -124,17 +124,19 @@ class CrossDocs:
             index_page=config.index_page,
         )
 
-        # Inject API Reference into nav if API docs are configured
+        # Inject API Reference into nav if API docs are configured AND generated
         if config.api:
             for api_config in config.api:
-                self._nav.append({
-                    "title": "API Reference",
-                    "items": [{
+                # Only add nav link if the JSON file exists
+                if self._get_api_json_path(api_config).exists():
+                    self._nav.append({
                         "title": "API Reference",
-                        "href": f"{api_config.prefix}/",
-                    }],
-                })
-                break  # Only add one API Reference section
+                        "items": [{
+                            "title": "API Reference",
+                            "href": f"{api_config.prefix.rstrip('/')}/",
+                        }],
+                    })
+                    break  # Only add one API Reference section
 
         # Create docs router
         docs_router = self._create_docs_router()
@@ -180,17 +182,19 @@ class CrossDocs:
             )
 
             # Inject API Reference into nav if there's an API config for this doc set
+            # AND the JSON file has been generated
             if config.api:
                 for api_config in config.api:
                     if api_config.doc_set == doc_set.slug:
-                        # Add API Reference section to this doc set's navigation
-                        nav.append({
-                            "title": "API Reference",
-                            "items": [{
+                        # Only add nav link if the JSON file exists
+                        if self._get_api_json_path(api_config).exists():
+                            nav.append({
                                 "title": "API Reference",
-                                "href": f"{api_config.prefix}/",
-                            }],
-                        })
+                                "items": [{
+                                    "title": "API Reference",
+                                    "href": f"{api_config.prefix.rstrip('/')}/",
+                                }],
+                            })
                         break  # Only add one API Reference section per doc set
 
             self._nav_by_slug[doc_set.slug] = nav
