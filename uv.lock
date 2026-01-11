@@ -184,22 +184,39 @@ dependencies = [
     { name = "fastapi" },
 ]
 
+[package.optional-dependencies]
+api = [
+    { name = "click" },
+    { name = "griffe" },
+]
+cli = [
+    { name = "click" },
+]
+
 [package.dev-dependencies]
 dev = [
+    { name = "click" },
     { name = "coverage", extra = ["toml"] },
+    { name = "griffe" },
     { name = "jinja2" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "click", marker = "extra == 'api'", specifier = ">=8.0" },
+    { name = "click", marker = "extra == 'cli'", specifier = ">=8.0" },
     { name = "cross-inertia", specifier = ">=0.11.0" },
     { name = "fastapi", specifier = ">=0.100.0" },
+    { name = "griffe", marker = "extra == 'api'", specifier = ">=1.0" },
 ]
+provides-extras = ["api", "cli"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "click", specifier = ">=8.0" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.0" },
+    { name = "griffe", specifier = ">=1.0" },
     { name = "jinja2", specifier = ">=3.0" },
     { name = "pytest", specifier = ">=8.0" },
 ]
@@ -224,7 +241,7 @@ name = "cross-docs-website"
 version = "0.1.0"
 source = { virtual = "website" }
 dependencies = [
-    { name = "cross-docs" },
+    { name = "cross-docs", extra = ["api"] },
     { name = "cross-inertia" },
     { name = "fastapi", extra = ["standard"] },
     { name = "httpx" },
@@ -240,7 +257,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cross-docs", editable = "python" },
+    { name = "cross-docs", extras = ["api"], editable = "python" },
     { name = "cross-inertia", specifier = ">=0.11.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.100.0" },
     { name = "httpx", specifier = ">=0.28.1" },
@@ -498,6 +515,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/b9/9a8c3fd59958c1c8027bc075af11722cdc62c4968bb277e841d131232289/fastar-0.8.0-pp311-pypy311_pp73-musllinux_1_2_armv7l.whl", hash = "sha256:382bfe82c026086487cb17fee12f4c1e2b4e67ce230f2e04487d3e7ddfd69031", size = 1042911, upload-time = "2025-11-26T02:35:21.857Z" },
     { url = "https://files.pythonhosted.org/packages/e2/2f/c3f30963b47022134b8a231c12845f4d7cfba520f59bbc1a82468aea77c7/fastar-0.8.0-pp311-pypy311_pp73-musllinux_1_2_i686.whl", hash = "sha256:908d2b9a1ff3d549cc304b32f95706a536da8f0bcb0bc0f9e4c1cce39b80e218", size = 1047464, upload-time = "2025-11-26T02:35:39.376Z" },
     { url = "https://files.pythonhosted.org/packages/9e/8a/218ab6d9a2bab3b07718e6cd8405529600edc1e9c266320e8524c8f63251/fastar-0.8.0-pp311-pypy311_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:1aa7dbde2d2d73eb5b6203d0f74875cb66350f0f1b4325b4839fc8fbbf5d074e", size = 997309, upload-time = "2025-11-26T02:35:57.722Z" },
+]
+
+[[package]]
+name = "griffe"
+version = "1.15.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0d/0c/3a471b6e31951dce2360477420d0a8d1e00dea6cf33b70f3e8c3ab6e28e1/griffe-1.15.0.tar.gz", hash = "sha256:7726e3afd6f298fbc3696e67958803e7ac843c1cfe59734b6251a40cdbfb5eea", size = 424112, upload-time = "2025-11-10T15:03:15.52Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/83/3b1d03d36f224edded98e9affd0467630fc09d766c0e56fb1498cbb04a9b/griffe-1.15.0-py3-none-any.whl", hash = "sha256:6f6762661949411031f5fcda9593f586e6ce8340f0ba88921a0f2ef7a81eb9a3", size = 150705, upload-time = "2025-11-10T15:03:13.549Z" },
 ]
 
 [[package]]

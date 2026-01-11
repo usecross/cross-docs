@@ -4,7 +4,13 @@ A complete solution for Python-backed documentation sites with
 React frontends, SSR support, and Shiki syntax highlighting.
 """
 
-from cross_docs.config import DocSet, DocsConfig, HomeConfig, load_config
+from cross_docs.config import (
+    APIPluginConfig,
+    DocSet,
+    DocsConfig,
+    HomeConfig,
+    load_config,
+)
 from cross_docs.markdown import load_markdown, load_raw_markdown, parse_frontmatter
 from cross_docs.middleware import strip_trailing_slash_middleware, wants_markdown
 from cross_docs.navigation import generate_nav
@@ -16,6 +22,7 @@ __all__ = [
     # Main class
     "CrossDocs",
     # Config
+    "APIPluginConfig",
     "DocSet",
     "DocsConfig",
     "HomeConfig",
@@ -30,3 +37,15 @@ __all__ = [
     "strip_trailing_slash_middleware",
     "wants_markdown",
 ]
+
+
+# Lazy imports for API module (requires optional dependencies)
+def __getattr__(name: str):
+    if name in ("api", "APIDocPlugin", "APIDocResult", "PythonAPIPlugin", "generate_api"):
+        from cross_docs import api
+
+        if name == "api":
+            return api
+        return getattr(api, name)
+
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

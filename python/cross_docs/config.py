@@ -54,6 +54,60 @@ class HomeFeature:
 
 
 @dataclass
+class APIPluginConfig:
+    """Configuration for a single API documentation plugin.
+
+    Used in pyproject.toml under [[tool.cross-docs.api]]:
+
+        [[tool.cross-docs.api]]
+        plugin = "python"
+        package = "my_package"
+        docstring_parser = "google"
+        include_private = false
+        prefix = "/api"
+        doc_set = ""  # Associate with a doc set by slug
+
+    Attributes:
+        plugin: Plugin identifier (e.g., "python", "typescript").
+        package: Package name to document (for Python plugin).
+        output_dir: Output directory for generated JSON (relative to content_dir).
+        prefix: URL prefix for API routes.
+        doc_set: Doc set slug to associate this API with (for multi-docs mode).
+        docstring_parser: Docstring style for Python ("google", "numpy", "sphinx").
+        include_private: Include private members starting with _.
+        include_special: Include special __dunder__ methods.
+        search_paths: Additional paths to search for modules.
+        component: React component to render API docs.
+    """
+
+    plugin: str
+    package: str | None = None
+    output_dir: str = "api"
+    prefix: str = "/api"
+    doc_set: str | None = None
+    docstring_parser: str = "google"
+    include_private: bool = False
+    include_special: bool = True
+    search_paths: list[str] | None = None
+    component: str = "api/APIPage"
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary for plugin configuration."""
+        return {
+            "plugin": self.plugin,
+            "package": self.package,
+            "output_dir": self.output_dir,
+            "prefix": self.prefix,
+            "doc_set": self.doc_set,
+            "docstring_parser": self.docstring_parser,
+            "include_private": self.include_private,
+            "include_special": self.include_special,
+            "search_paths": self.search_paths,
+            "component": self.component,
+        }
+
+
+@dataclass
 class HomeConfig:
     """Configuration for the homepage.
 
@@ -130,6 +184,8 @@ class DocsConfig:
     home: HomeConfig = field(default_factory=HomeConfig)
     # Multi-docs support (optional)
     doc_sets: list[DocSet] | None = None
+    # API documentation plugins (optional)
+    api: list[APIPluginConfig] | None = None
 
 
 def load_config(
@@ -193,6 +249,10 @@ def load_config(
     # Handle doc_sets specially - convert list of dicts to list of DocSet
     if "doc_sets" in merged and isinstance(merged["doc_sets"], list):
         merged["doc_sets"] = [DocSet(**ds) for ds in merged["doc_sets"]]
+
+    # Handle api specially - convert list of dicts to list of APIPluginConfig
+    if "api" in merged and isinstance(merged["api"], list):
+        merged["api"] = [APIPluginConfig(**api) for api in merged["api"]]
 
     return DocsConfig(**merged)
 

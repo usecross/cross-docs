@@ -26,6 +26,13 @@ dependencies = [
     "cross-inertia>=0.11.0",
 ]
 
+[project.optional-dependencies]
+api = ["griffe>=1.0", "click>=8.0"]
+cli = ["click>=8.0"]
+
+[project.scripts]
+cross-docs = "cross_docs.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/usecross/cross-docs"
 Documentation = "https://cross-docs.dev"
@@ -46,7 +53,7 @@ target-version = "py310"
 select = ["E", "F", "I", "UP"]
 
 [dependency-groups]
-dev = ["pytest>=8.0", "jinja2>=3.0", "coverage[toml]>=7.0"]
+dev = ["pytest>=8.0", "jinja2>=3.0", "coverage[toml]>=7.0", "click>=8.0", "griffe>=1.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

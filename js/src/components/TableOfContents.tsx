@@ -169,7 +169,7 @@ export function TableOfContents({ items, className = '', ...props }: TableOfCont
                     : 'border-transparent text-gray-600 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
-                {item.text}
+                {item.text || item.title}
               </a>
             </li>
           )
