@@ -177,7 +177,7 @@ toml = [
 
 [[package]]
 name = "cross-docs"
-version = "0.11.0"
+version = "0.12.0"
 source = { editable = "python" }
 dependencies = [
     { name = "cross-inertia" },
@@ -223,7 +223,7 @@ dev = [
 
 [[package]]
 name = "cross-docs-monorepo"
-version = "0.11.0"
+version = "0.12.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]

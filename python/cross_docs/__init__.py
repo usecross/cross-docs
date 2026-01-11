@@ -16,7 +16,7 @@ from cross_docs.middleware import strip_trailing_slash_middleware, wants_markdow
 from cross_docs.navigation import generate_nav
 from cross_docs.routes import CrossDocs
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"
 
 __all__ = [
     # Main class
