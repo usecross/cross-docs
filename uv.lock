@@ -195,7 +195,9 @@ cli = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "click" },
     { name = "coverage", extra = ["toml"] },
+    { name = "griffe" },
     { name = "jinja2" },
     { name = "pytest" },
 ]
@@ -212,7 +214,9 @@ provides-extras = ["api", "cli"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "click", specifier = ">=8.0" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.0" },
+    { name = "griffe", specifier = ">=1.0" },
     { name = "jinja2", specifier = ">=3.0" },
     { name = "pytest", specifier = ">=8.0" },
 ]

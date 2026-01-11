@@ -1,4 +1,5 @@
 import type { GriffeDocstring, GriffeDocstringSection, GriffeDocstringElement, GriffeExpression } from '../../types'
+import { Markdown } from '../Markdown'
 
 /**
  * Render a type annotation expression to string
@@ -84,7 +85,7 @@ function DocstringSection({ section }: DocstringSectionProps) {
     case 'text':
       return (
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <p className="whitespace-pre-wrap">{section.value as string}</p>
+          <Markdown content={section.value as string} />
         </div>
       )
 
@@ -246,18 +247,14 @@ export function Docstring({ docstring, raw = false, showOnlyText = false, classN
     )
   }
 
-  // If showOnlyText, only render text sections
+  // If showOnlyText, only render the first text section (the description)
   if (showOnlyText) {
-    const textSections = docstring.parsed.filter(s => s.kind === 'text')
-    if (textSections.length === 0) return null
+    const firstTextSection = docstring.parsed.find(s => s.kind === 'text')
+    if (!firstTextSection) return null
 
     return (
-      <div className={`space-y-4 ${className}`}>
-        {textSections.map((section, i) => (
-          <p key={i} className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            {section.value as string}
-          </p>
-        ))}
+      <div className={`prose prose-sm dark:prose-invert max-w-none ${className}`}>
+        <Markdown content={firstTextSection.value as string} />
       </div>
     )
   }

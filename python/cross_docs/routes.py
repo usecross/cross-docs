@@ -102,15 +102,15 @@ class CrossDocs:
         config = self.config
 
         if config.doc_sets:
-            # Multi-docs mode
+            # Multi-docs mode (API routes are added internally before doc routes)
             self._build_multi_docs()
         else:
             # Single-docs mode (original behavior)
             self._build_single_docs()
-
-        # Add API routes if configured
-        if config.api:
-            self._build_api_routes()
+            # Add API routes if configured (for single-docs mode only,
+            # multi-docs handles this internally for correct route ordering)
+            if config.api:
+                self._build_api_routes()
 
     def _build_single_docs(self) -> None:
         """Build router for single documentation set (original behavior)."""
@@ -123,6 +123,18 @@ class CrossDocs:
             section_order=config.section_order,
             index_page=config.index_page,
         )
+
+        # Inject API Reference into nav if API docs are configured
+        if config.api:
+            for api_config in config.api:
+                self._nav.append({
+                    "title": "API Reference",
+                    "items": [{
+                        "title": "API Reference",
+                        "href": f"{api_config.prefix}/",
+                    }],
+                })
+                break  # Only add one API Reference section
 
         # Create docs router
         docs_router = self._create_docs_router()
@@ -167,6 +179,20 @@ class CrossDocs:
                 index_page=doc_set.index_page,
             )
 
+            # Inject API Reference into nav if there's an API config for this doc set
+            if config.api:
+                for api_config in config.api:
+                    if api_config.doc_set == doc_set.slug:
+                        # Add API Reference section to this doc set's navigation
+                        nav.append({
+                            "title": "API Reference",
+                            "items": [{
+                                "title": "API Reference",
+                                "href": f"{api_config.prefix}/",
+                            }],
+                        })
+                        break  # Only add one API Reference section per doc set
+
             self._nav_by_slug[doc_set.slug] = nav
 
             self._doc_sets_meta.append({
@@ -187,6 +213,11 @@ class CrossDocs:
 
         if config.home.enabled:
             self._add_home_route()
+
+        # Add API routes BEFORE doc set routes (API routes are more specific
+        # and must be registered before the catch-all {path:path} routes)
+        if config.api:
+            self._build_api_routes()
 
         # Add routes for each doc set (non-empty slugs first to avoid catch-all issues)
         sorted_doc_sets = sorted(config.doc_sets, key=lambda ds: (ds.slug == "", ds.slug))
@@ -410,6 +441,7 @@ class CrossDocs:
         """Generate navigation structure from API data.
 
         Groups items by kind (Modules, Aliases) like strawberry.rocks.
+        Uses dotted paths in URLs (e.g., /api-reference/package.module).
         """
         prefix = prefix.rstrip("/")
         package_name = api_data.get("name", "api")
@@ -430,15 +462,16 @@ class CrossDocs:
 
             kind = member.get("kind", "")
 
+            # Use dotted path: /prefix/package.name
             if kind == "module":
                 modules.append({
                     "title": name,
-                    "href": f"{prefix}/{package_name}/{name}/",
+                    "href": f"{prefix}/{package_name}.{name}",
                 })
             elif kind == "alias":
                 aliases.append({
                     "title": name,
-                    "href": f"{prefix}/{package_name}/{name}/",
+                    "href": f"{prefix}/{package_name}.{name}",
                 })
 
         # Sort alphabetically
@@ -522,6 +555,8 @@ class CrossDocs:
         prefix = api_config.prefix.rstrip("/")
         component = api_config.component
         package_name = api_data.get("name", api_config.package or "api")
+        doc_set_slug = api_config.doc_set
+        doc_sets_meta = self._doc_sets_meta
 
         # Create shared data function
         def make_share_data(request: Request) -> dict[str, Any]:
@@ -530,6 +565,11 @@ class CrossDocs:
                 "apiNav": api_nav,
                 "currentPath": str(request.url.path),
             }
+            # Include doc set info if available
+            if doc_sets_meta:
+                data["docSets"] = doc_sets_meta
+            if doc_set_slug is not None:
+                data["currentDocSet"] = doc_set_slug
             if config.logo_url:
                 data["logoUrl"] = config.logo_url
             if config.logo_inverted_url:
@@ -566,10 +606,11 @@ class CrossDocs:
                 view_data={"page_title": f"API Reference - {_package_name}"},
             )
 
-        # Route for specific API paths (modules, classes, functions)
-        @self._router.get(f"{prefix}/{{path:path}}", tags=["api"])  # type: ignore
+        # Route for specific API paths using dotted notation
+        # e.g., /api-reference/strawberry.enum or /api-reference/strawberry.dataloader.DataLoader
+        @self._router.get(f"{prefix}/{{dotted_path:path}}", tags=["api"])  # type: ignore
         async def api_page(
-            path: str,
+            dotted_path: str,
             request: Request,
             inertia: InertiaDep,
             _api_data: dict = api_data,
@@ -577,14 +618,14 @@ class CrossDocs:
             _share_data: Any = make_share_data,
             _package_name: str = package_name,
         ):
-            """Serve API documentation page for a specific path."""
-            path = path.rstrip("/")
-            if not path:
-                path = _package_name
+            """Serve API documentation page for a specific dotted path."""
+            dotted_path = dotted_path.rstrip("/")
+            if not dotted_path:
+                dotted_path = _package_name
 
-            # Convert URL path to dotted module path
-            # e.g., "cross_docs/config/DocsConfig" -> ["cross_docs", "config", "DocsConfig"]
-            path_parts = path.split("/")
+            # Split dotted path into parts
+            # e.g., "strawberry.dataloader.DataLoader" -> ["strawberry", "dataloader", "DataLoader"]
+            path_parts = dotted_path.split(".")
 
             # Try to find the item in the API data
             item = self._find_api_item(_api_data, path_parts)
@@ -595,7 +636,7 @@ class CrossDocs:
             props = {
                 "apiData": _api_data,
                 "currentItem": item,
-                "currentPath": path,
+                "currentPath": str(request.url.path),
                 "currentModule": path_parts[0] if path_parts else _package_name,
                 **_share_data(request),
             }

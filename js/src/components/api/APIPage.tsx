@@ -97,35 +97,41 @@ function APIContent({
   prefix,
   currentPath,
   apiData,
+  displayPath,
 }: {
   item: GriffeMember
   prefix: string
   currentPath: string
   apiData: GriffeModule
+  /** Override the display path (used for aliases to show alias name instead of target) */
+  displayPath?: string
 }) {
   // Handle aliases by resolving to target
   if (item.kind === 'alias') {
-    const resolved = resolveAlias(item as GriffeAlias, apiData)
+    const alias = item as GriffeAlias
+    const resolved = resolveAlias(alias, apiData)
     if (resolved) {
-      return <APIContent item={resolved} prefix={prefix} currentPath={currentPath} apiData={apiData} />
+      // Pass the alias path as displayPath so title shows "strawberry.enum" not "strawberry.types.enum.enum"
+      const aliasDisplayPath = alias.path || `${apiData.name}.${alias.name}`
+      return <APIContent item={resolved} prefix={prefix} currentPath={currentPath} apiData={apiData} displayPath={aliasDisplayPath} />
     }
     // Could not resolve alias
     return (
       <div className="text-gray-600 dark:text-gray-300">
-        <p>Could not resolve alias: {(item as GriffeAlias).target_path}</p>
+        <p>Could not resolve alias: {alias.target_path}</p>
       </div>
     )
   }
 
   switch (item.kind) {
     case 'module':
-      return <ModuleDoc module={item as GriffeModule} prefix={prefix} showFull />
+      return <ModuleDoc module={item as GriffeModule} prefix={prefix} showFull displayPath={displayPath} />
 
     case 'class':
-      return <ClassDoc cls={item as GriffeClass} prefix={prefix} currentPath={currentPath} />
+      return <ClassDoc cls={item as GriffeClass} prefix={prefix} currentPath={currentPath} displayPath={displayPath} />
 
     case 'function':
-      return <FunctionDoc fn={item as GriffeFunction} />
+      return <FunctionDoc fn={item as GriffeFunction} displayPath={displayPath} />
 
     default:
       return (
@@ -166,6 +172,9 @@ export function APIPage({
   footerLogoInvertedUrl,
   githubUrl,
   navLinks,
+  header,
+  headerHeight,
+  footer,
 }: APIPageProps) {
   // Determine what to render
   const itemToRender = currentItem || apiData
@@ -179,8 +188,10 @@ export function APIPage({
   }
 
   // Determine prefix from current path
+  // currentPath is like /docs/api-reference/strawberry.enum
+  // We need to extract /docs/api-reference as the prefix (first 3 parts when split by /)
   const pathParts = currentPath.split('/')
-  const prefix = pathParts.slice(0, 2).join('/') || '/api'
+  const prefix = pathParts.slice(0, 3).join('/') || '/api'
 
   // Generate table of contents
   const tocItems = itemToRender ? generateTocItems(itemToRender, apiData) : []
@@ -197,6 +208,9 @@ export function APIPage({
       githubUrl={githubUrl}
       navLinks={navLinks}
       rightSidebar={tocItems.length > 0 ? <TableOfContents items={tocItems} /> : undefined}
+      header={header}
+      headerHeight={headerHeight}
+      footer={footer}
     >
       <APIContent item={itemToRender} prefix={prefix} currentPath={currentPath} apiData={apiData} />
     </APILayout>

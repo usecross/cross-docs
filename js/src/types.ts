@@ -99,7 +99,7 @@ export interface DocsLayoutProps {
 export interface TableOfContentsProps {
   items: TOCItem[]
   className?: string
-  style: any
+  style?: React.CSSProperties
 }
 
 /** Props for Sidebar component */
@@ -218,6 +218,8 @@ export interface GriffeObjectBase {
   filepath?: string
   /** Relative file path (set by cross-docs) */
   relative_filepath?: string
+  /** Relative file path within the package (set by Griffe) */
+  relative_package_filepath?: string
   lineno?: number
   endlineno?: number
   docstring?: GriffeDocstring
@@ -297,6 +299,12 @@ export interface APIPageProps {
   githubUrl?: string
   /** Navigation links */
   navLinks?: Array<{ label: string; href: string }>
+  /** Custom header component (replaces entire header). Can be a ReactNode or a function that receives mobile menu props. */
+  header?: React.ReactNode | ((props: { mobileMenuOpen: boolean; toggleMobileMenu: () => void }) => React.ReactNode)
+  /** Header height in pixels. Used to calculate content offset. Defaults to 64 (h-16). */
+  headerHeight?: number
+  /** Custom footer component */
+  footer?: React.ReactNode
 }
 
 /** Props for ModuleDoc component */

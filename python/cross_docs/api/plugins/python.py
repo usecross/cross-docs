@@ -129,8 +129,9 @@ class PythonAPIPlugin(APIDocPlugin):
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, "w", encoding="utf-8") as f:
-            # Use Griffe's JSONEncoder for proper serialization of Griffe objects
-            json.dump(data, f, indent=2, ensure_ascii=False, cls=griffe.JSONEncoder)
+            # Use Griffe's JSONEncoder with full=True to include parsed docstrings
+            encoder = griffe.JSONEncoder(indent=2, ensure_ascii=False, full=True)
+            f.write(encoder.encode(data))
 
         # Generate navigation
         nav_items = self._generate_nav(data)

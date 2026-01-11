@@ -88,12 +88,14 @@ interface ModuleDocProps {
   showFull?: boolean
   /** Additional CSS class */
   className?: string
+  /** Override display path (e.g., for aliases to show alias name instead of target path) */
+  displayPath?: string
 }
 
 /**
  * Renders documentation for a module including its classes, functions, and submodules.
  */
-export function ModuleDoc({ module, prefix = '/api', showFull = true, className = '' }: ModuleDocProps) {
+export function ModuleDoc({ module, prefix = '/api', showFull = true, className = '', displayPath }: ModuleDocProps) {
   const members = module.members ?? {}
 
   // Separate members by type
@@ -125,10 +127,10 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
   functions.sort((a, b) => a.name.localeCompare(b.name))
   attributes.sort((a, b) => a.name.localeCompare(b.name))
 
-  // Generate href for a member
+  // Generate href for a member using dotted path
   const memberHref = (member: GriffeMember) => {
     const modulePath = module.path || module.name
-    return `${prefix}/${modulePath.replace(/\./g, '/')}/${member.name}/`
+    return `${prefix}/${modulePath}.${member.name}`
   }
 
   return (
@@ -136,7 +138,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
       {/* Module header */}
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
         <span className="text-gray-500 dark:text-gray-400 font-normal">module </span>
-        {module.path || module.name}
+        {displayPath || module.path || module.name}
       </h1>
 
       {/* Docstring */}
@@ -156,7 +158,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
             {submodules.map((submodule) => (
               <li key={submodule.name}>
                 <Link
-                  href={`${prefix}/${(submodule.path || submodule.name).replace(/\./g, '/')}/`}
+                  href={`${prefix}/${submodule.path || submodule.name}`}
                   className="block p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
                 >
                   <div className="font-mono text-sm text-primary-600 dark:text-primary-400">
@@ -284,9 +286,9 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
       )}
 
       {/* Source location */}
-      {module.filepath && (
+      {(module.relative_package_filepath || module.filepath) && (
         <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          <span className="font-mono">{module.filepath}</span>
+          <span className="font-mono">{module.relative_package_filepath || module.filepath}</span>
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@ import { Signature } from './Signature'
 import { Docstring } from './Docstring'
 import { ParameterTable } from './ParameterTable'
 import { CodeSpan } from './CodeSpan'
+import { Markdown } from '../Markdown'
 
 interface FunctionDocProps {
   fn: GriffeFunction
@@ -14,12 +15,14 @@ interface FunctionDocProps {
   githubUrl?: string
   /** Additional CSS class */
   className?: string
+  /** Override display path (e.g., for aliases to show alias name instead of target path) */
+  displayPath?: string
 }
 
 /**
  * Renders documentation for a function or method matching strawberry.rocks design.
  */
-export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, className = '' }: FunctionDocProps) {
+export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, className = '', displayPath }: FunctionDocProps) {
   const hasParams = fn.parameters && fn.parameters.filter(p => p.name !== 'self').length > 0
 
   // Get returns description from docstring
@@ -29,8 +32,12 @@ export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, 
     ? (returnsValue[0] as GriffeDocstringElement)?.description
     : undefined
 
-  // Get relative filepath for display
-  const relativeFilepath = fn.relative_filepath || fn.filepath
+  // Get additional text sections (examples, notes, etc.) - all text sections after the first
+  const textSections = fn.docstring?.parsed?.filter(s => s.kind === 'text') || []
+  const additionalTextSections = textSections.slice(1) // Skip first (description)
+
+  // Get relative filepath for display (prefer package-relative path)
+  const relativeFilepath = fn.relative_package_filepath || fn.relative_filepath || fn.filepath
 
   // Build GitHub URL for source link
   const githubSourceUrl = githubUrl && relativeFilepath && fn.lineno
@@ -42,7 +49,7 @@ export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, 
       {/* Function name/title */}
       {showName && (
         <h1 className="font-mono text-2xl font-normal text-gray-900 dark:text-white mb-8">
-          {fn.path || fn.name}
+          {displayPath || fn.path || fn.name}
         </h1>
       )}
 
@@ -83,6 +90,15 @@ export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, 
             parameters={fn.parameters!}
             docstringSections={fn.docstring?.parsed}
           />
+        </section>
+      )}
+
+      {/* Additional text sections (examples, notes, etc.) */}
+      {additionalTextSections.length > 0 && (
+        <section className="mb-6 prose prose-sm dark:prose-invert max-w-none">
+          {additionalTextSections.map((section, i) => (
+            <Markdown key={i} content={section.value as string} />
+          ))}
         </section>
       )}
 

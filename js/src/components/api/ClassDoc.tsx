@@ -117,13 +117,15 @@ interface ClassDocProps {
   githubUrl?: string
   /** Additional CSS class */
   className?: string
+  /** Override display path (e.g., for aliases to show alias name instead of target path) */
+  displayPath?: string
 }
 
 /**
  * Renders documentation for a class matching strawberry.rocks design.
  * Includes: Title, Constructor, Methods (collapsible), Attributes, and footer.
  */
-export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentPath, githubUrl, className = '' }: ClassDocProps) {
+export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentPath, githubUrl, className = '', displayPath }: ClassDocProps) {
   const members = cls.members ?? {}
 
   // Separate members by type
@@ -152,8 +154,8 @@ export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentP
     .filter(a => !a.name.startsWith('_'))
     .sort((a, b) => a.name.localeCompare(b.name))
 
-  // Get relative filepath for display
-  const relativeFilepath = cls.relative_filepath || cls.filepath
+  // Get relative filepath for display (prefer package-relative path)
+  const relativeFilepath = cls.relative_package_filepath || cls.relative_filepath || cls.filepath
 
   // Build GitHub URL for source link
   const githubSourceUrl = githubUrl && relativeFilepath && cls.lineno
@@ -164,7 +166,7 @@ export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentP
     <div className={className}>
       {/* Title - monospace like strawberry.rocks */}
       <h1 className="font-mono text-2xl font-normal text-gray-900 dark:text-white mb-8">
-        {cls.path || cls.name}
+        {displayPath || cls.path || cls.name}
       </h1>
 
       {/* Constructor section */}

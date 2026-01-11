@@ -65,12 +65,14 @@ class APIPluginConfig:
         docstring_parser = "google"
         include_private = false
         prefix = "/api"
+        doc_set = ""  # Associate with a doc set by slug
 
     Attributes:
         plugin: Plugin identifier (e.g., "python", "typescript").
         package: Package name to document (for Python plugin).
         output_dir: Output directory for generated JSON (relative to content_dir).
         prefix: URL prefix for API routes.
+        doc_set: Doc set slug to associate this API with (for multi-docs mode).
         docstring_parser: Docstring style for Python ("google", "numpy", "sphinx").
         include_private: Include private members starting with _.
         include_special: Include special __dunder__ methods.
@@ -82,6 +84,7 @@ class APIPluginConfig:
     package: str | None = None
     output_dir: str = "api"
     prefix: str = "/api"
+    doc_set: str | None = None
     docstring_parser: str = "google"
     include_private: bool = False
     include_special: bool = True
@@ -95,6 +98,7 @@ class APIPluginConfig:
             "package": self.package,
             "output_dir": self.output_dir,
             "prefix": self.prefix,
+            "doc_set": self.doc_set,
             "docstring_parser": self.docstring_parser,
             "include_private": self.include_private,
             "include_special": self.include_special,
