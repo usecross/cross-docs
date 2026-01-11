@@ -4,6 +4,7 @@ export type { TOCItem as TocItem } from '../../types'
 
 /**
  * Generate TOC items from a class's members
+ * Filters out private members (except __init__) to match ClassDoc rendering
  */
 export function generateClassToc(cls: {
   name: string
@@ -17,30 +18,32 @@ export function generateClassToc(cls: {
   if (!cls.members) return items
 
   const members = Object.values(cls.members)
+
+  // Filter methods: __init__ is special, skip other private/dunder methods
   const methods = members.filter(m => m.kind === 'function')
-  const attributes = members.filter(m => m.kind === 'attribute')
-
-  // Find __init__ first
   const initMethod = methods.find(m => m.name === '__init__')
+  const publicMethods = methods
+    .filter(m => m.name !== '__init__' && !m.name.startsWith('_'))
+    .sort((a, b) => a.name.localeCompare(b.name))
+
+  // Filter attributes: skip private ones
+  const publicAttributes = members
+    .filter(m => m.kind === 'attribute' && !m.name.startsWith('_'))
+    .sort((a, b) => a.name.localeCompare(b.name))
+
+  // Add constructor section if exists
   if (initMethod) {
-    items.push({ id: '__init__', title: '__init__', level: 2 })
+    items.push({ id: 'constructor', title: 'Constructor', level: 2 })
   }
 
-  // Add methods section
-  if (methods.length > 0) {
-    const otherMethods = methods.filter(m => m.name !== '__init__')
-    otherMethods.sort((a, b) => a.name.localeCompare(b.name))
-
-    for (const method of otherMethods) {
-      items.push({ id: method.name, title: method.name, level: 2 })
-    }
+  // Add methods section header if there are public methods
+  if (publicMethods.length > 0) {
+    items.push({ id: 'methods', title: 'Methods', level: 2 })
   }
 
-  // Add attributes section
-  if (attributes.length > 0) {
-    for (const attr of attributes) {
-      items.push({ id: attr.name, title: attr.name, level: 2 })
-    }
+  // Add attributes section header if there are public attributes
+  if (publicAttributes.length > 0) {
+    items.push({ id: 'attributes', title: 'Attributes', level: 2 })
   }
 
   return items

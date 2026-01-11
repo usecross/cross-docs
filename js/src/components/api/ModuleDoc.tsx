@@ -136,7 +136,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
   return (
     <div className={className}>
       {/* Module header */}
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      <h1 id={module.name} className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
         <span className="text-gray-500 dark:text-gray-400 font-normal">module </span>
         {displayPath || module.path || module.name}
       </h1>
@@ -178,7 +178,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
 
       {/* Classes - summary or full */}
       {classes.length > 0 && (
-        <div className="mb-8">
+        <div id="classes" className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
             Classes
           </h2>
@@ -214,7 +214,7 @@ export function ModuleDoc({ module, prefix = '/api', showFull = true, className 
 
       {/* Functions - summary or full */}
       {functions.length > 0 && (
-        <div className="mb-8">
+        <div id="functions" className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
             Functions
           </h2>

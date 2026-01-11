@@ -165,13 +165,13 @@ export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentP
   return (
     <div className={className}>
       {/* Title - monospace like strawberry.rocks */}
-      <h1 className="font-mono text-2xl font-normal text-gray-900 dark:text-white mb-8">
+      <h1 id={cls.name} className="font-mono text-2xl font-normal text-gray-900 dark:text-white mb-8">
         {displayPath || cls.path || cls.name}
       </h1>
 
       {/* Constructor section */}
       {initMethod && (
-        <section className="mb-8">
+        <section id="constructor" className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Constructor:
           </h2>
@@ -196,7 +196,7 @@ export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentP
 
       {/* Methods section - collapsible */}
       {publicMethods.length > 0 && (
-        <section className="mb-8">
+        <section id="methods" className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Methods:
           </h2>
@@ -210,7 +210,7 @@ export function ClassDoc({ cls, prefix: _prefix = '/api', currentPath: _currentP
 
       {/* Attributes section */}
       {publicAttributes.length > 0 && (
-        <section className="mb-8">
+        <section id="attributes" className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Attributes:
           </h2>

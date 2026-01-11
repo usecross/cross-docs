@@ -82,7 +82,7 @@ export function FunctionDoc({ fn, isMethod = false, showName = true, githubUrl, 
 
       {/* Parameters section */}
       {hasParams && (
-        <section className="mb-6">
+        <section id="parameters" className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Parameters:
           </h2>
