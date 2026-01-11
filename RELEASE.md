@@ -32,4 +32,5 @@ docstring_parser = "google"
 
 ## Bug Fixes
 
-- Fixed API sidebar navigation URLs to use slashes instead of dots (e.g., `/api/pkg/module/` instead of `/api/pkg.module`)
+- Fixed API navigation URLs to use dotted paths (e.g., `/api/pkg.module` instead of `/api/pkg/module/`) for cleaner URLs
+- Fixed prefix calculation for multi-docs API references (e.g., `/docs/django/api-reference/`)

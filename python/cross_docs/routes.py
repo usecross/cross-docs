@@ -598,6 +598,7 @@ class CrossDocs:
             props = {
                 "apiData": _api_data,
                 "currentModule": _package_name,
+                "prefix": prefix,
                 **_share_data(request),
             }
             return inertia.render(
@@ -638,6 +639,7 @@ class CrossDocs:
                 "currentItem": item,
                 "currentPath": str(request.url.path),
                 "currentModule": path_parts[0] if path_parts else _package_name,
+                "prefix": prefix,
                 **_share_data(request),
             }
 

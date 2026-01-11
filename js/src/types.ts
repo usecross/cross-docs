@@ -287,6 +287,8 @@ export interface APIPageProps {
   currentModule: string
   /** Navigation structure for API sidebar */
   apiNav: NavSection[]
+  /** URL prefix for API links (e.g., /docs/api-reference) */
+  prefix: string
   /** Logo URL */
   logoUrl?: string
   /** Logo URL for dark mode */

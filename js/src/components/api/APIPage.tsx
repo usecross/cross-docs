@@ -166,6 +166,7 @@ export function APIPage({
   currentPath,
   currentModule,
   apiNav,
+  prefix,
   logoUrl,
   logoInvertedUrl,
   footerLogoUrl,
@@ -186,12 +187,6 @@ export function APIPage({
     const kind = itemToRender.kind
     title = `${name} (${kind}) - API Reference`
   }
-
-  // Determine prefix from current path
-  // currentPath is like /docs/api-reference/strawberry.enum
-  // We need to extract /docs/api-reference as the prefix (first 3 parts when split by /)
-  const pathParts = currentPath.split('/')
-  const prefix = pathParts.slice(0, 3).join('/') || '/api'
 
   // Generate table of contents
   const tocItems = itemToRender ? generateTocItems(itemToRender, apiData) : []
