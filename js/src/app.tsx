@@ -1,4 +1,4 @@
-import { createInertiaApp } from '@inertiajs/react'
+import { createInertiaApp, config } from '@inertiajs/react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import type { DocsAppConfig } from './types'
 import { ComponentsProvider } from './context/ComponentsContext'
@@ -19,14 +19,18 @@ import { ThemeProvider } from './components/ThemeProvider'
  * })
  * ```
  */
-export function createDocsApp(config: DocsAppConfig): void {
-  const { pages, title, components } = config
+export function createDocsApp(appConfig: DocsAppConfig): void {
+  const { pages, title, components } = appConfig
 
   // Disable scroll restoration on initial page load
   if (typeof window !== 'undefined') {
     window.history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
   }
+
+  // Use script element for initial page data to avoid issues with HTML content in JSON
+  // @ts-expect-error - future config option not yet in types
+  config.set('future.useScriptElementForInitialPage', true)
 
   createInertiaApp({
     title: title ?? ((pageTitle) => (pageTitle ? `${pageTitle}` : 'Documentation')),

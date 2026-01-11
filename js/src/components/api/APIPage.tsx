@@ -98,6 +98,7 @@ function APIContent({
   currentPath,
   apiData,
   displayPath,
+  githubUrl,
 }: {
   item: GriffeMember
   prefix: string
@@ -105,6 +106,8 @@ function APIContent({
   apiData: GriffeModule
   /** Override the display path (used for aliases to show alias name instead of target) */
   displayPath?: string
+  /** GitHub repository URL for "Open in GitHub" links */
+  githubUrl?: string
 }) {
   // Handle aliases by resolving to target
   if (item.kind === 'alias') {
@@ -113,7 +116,7 @@ function APIContent({
     if (resolved) {
       // Pass the alias path as displayPath so title shows "strawberry.enum" not "strawberry.types.enum.enum"
       const aliasDisplayPath = alias.path || `${apiData.name}.${alias.name}`
-      return <APIContent item={resolved} prefix={prefix} currentPath={currentPath} apiData={apiData} displayPath={aliasDisplayPath} />
+      return <APIContent item={resolved} prefix={prefix} currentPath={currentPath} apiData={apiData} displayPath={aliasDisplayPath} githubUrl={githubUrl} />
     }
     // Could not resolve alias
     return (
@@ -125,13 +128,13 @@ function APIContent({
 
   switch (item.kind) {
     case 'module':
-      return <ModuleDoc module={item as GriffeModule} prefix={prefix} showFull displayPath={displayPath} />
+      return <ModuleDoc module={item as GriffeModule} prefix={prefix} showFull displayPath={displayPath} githubUrl={githubUrl} />
 
     case 'class':
-      return <ClassDoc cls={item as GriffeClass} prefix={prefix} currentPath={currentPath} displayPath={displayPath} />
+      return <ClassDoc cls={item as GriffeClass} prefix={prefix} currentPath={currentPath} displayPath={displayPath} githubUrl={githubUrl} />
 
     case 'function':
-      return <FunctionDoc fn={item as GriffeFunction} displayPath={displayPath} />
+      return <FunctionDoc fn={item as GriffeFunction} displayPath={displayPath} githubUrl={githubUrl} />
 
     default:
       return (
@@ -207,7 +210,7 @@ export function APIPage({
       headerHeight={headerHeight}
       footer={footer}
     >
-      <APIContent item={itemToRender} prefix={prefix} currentPath={currentPath} apiData={apiData} />
+      <APIContent item={itemToRender} prefix={prefix} currentPath={currentPath} apiData={apiData} githubUrl={githubUrl} />
     </APILayout>
   )
 }
