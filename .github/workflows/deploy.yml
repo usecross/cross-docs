@@ -29,7 +29,10 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-        working-directory: website
+
+      - name: Build @usecross/docs package
+        run: bun run build
+        working-directory: js
 
       - name: Build frontend
         run: bun run build
