@@ -7,9 +7,6 @@ requires-python = ">=3.10"
 [tool.uv.workspace]
 members = ["python", "website"]
 
-[tool.uv.sources]
-cross-docs = { workspace = true }
-
 [tool.autopub]
 plugins = [
     "autopub_bun:CrossDocsPlugin",

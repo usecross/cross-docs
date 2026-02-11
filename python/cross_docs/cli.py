@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 try:
     import click
@@ -23,6 +22,7 @@ except ImportError:
         print("Install it with: pip install click", file=sys.stderr)
         sys.exit(1)
 else:
+
     @click.group()
     @click.version_option(package_name="cross-docs")
     def main() -> None:
@@ -60,10 +60,10 @@ else:
     )
     def generate_api(
         plugin: tuple[str, ...],
-        package: Optional[str],
-        output: Optional[Path],
-        parser: Optional[str],
-        config: Optional[Path],
+        package: str | None,
+        output: Path | None,
+        parser: str | None,
+        config: Path | None,
     ) -> None:
         """Generate API documentation from source code.
 
