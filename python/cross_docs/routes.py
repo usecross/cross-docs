@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -102,7 +103,7 @@ class CrossDocs:
         configure_inertia(
             vite_entry="app.tsx",
             ssr_enabled=True,
-            ssr_command="bun static/build/ssr/ssr.js",
+            ssr_command=[sys.executable, "-m", "pybun", "static/build/ssr/ssr.js"],
             template_dir="templates",
             manifest_path="static/build/.vite/manifest.json",
         )
