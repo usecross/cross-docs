@@ -104,6 +104,11 @@ export function ThemeProvider({
 export function useTheme(): ThemeContextValue {
   const context = useContext(ThemeContext)
   if (!context) {
+    // During SSR, the context may not be available due to module
+    // duplication in the bundle. Return safe defaults instead of throwing.
+    if (typeof window === 'undefined') {
+      return { theme: 'system', resolvedTheme: 'light', setTheme: () => {} }
+    }
     throw new Error('useTheme must be used within a ThemeProvider')
   }
   return context

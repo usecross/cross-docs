@@ -6,9 +6,12 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, FastAPI, HTTPException, Request
 from fastapi.responses import PlainTextResponse
+from fastapi.staticfiles import StaticFiles
+from cross_inertia import configure_inertia
 from cross_inertia.fastapi import InertiaDep
+from cross_inertia.fastapi.experimental import inertia_lifespan
 
 from .markdown import load_markdown, load_raw_markdown
 from .middleware import wants_markdown
@@ -27,18 +30,12 @@ class CrossDocs:
     Example:
         from cross_docs import CrossDocs
 
-        docs = CrossDocs()
-        docs.mount(app)
-
-        # Or with explicit config:
-        from cross_docs import CrossDocs, load_config
-
-        config = load_config()
-        docs = CrossDocs(config)
-        app.include_router(docs.router)
+        docs = CrossDocs(title="My Docs")
+        app = docs.app  # FastAPI instance, ready for uvicorn
 
         # Override component names:
         docs = CrossDocs(
+            title="My Docs",
             docs_component="custom/DocsPage",
             home_component="custom/HomePage",
         )
@@ -50,6 +47,7 @@ class CrossDocs:
         *,
         docs_component: str | None = None,
         home_component: str | None = None,
+        **fastapi_kwargs: Any,
     ):
         """Initialize CrossDocs.
 
@@ -57,6 +55,9 @@ class CrossDocs:
             config: DocsConfig instance. If None, loads from pyproject.toml.
             docs_component: Override the docs page component name.
             home_component: Override the home page component name.
+            **fastapi_kwargs: Passed to FastAPI constructor (e.g. title,
+                docs_url, redoc_url). Creates a fully-configured FastAPI
+                app accessible via ``self.app``.
         """
         from .config import load_config
 
@@ -74,6 +75,43 @@ class CrossDocs:
         # API docs support
         self._api_data: dict[str, dict] | None = None
         self._api_nav: dict[str, list[dict]] | None = None
+
+        self._app: FastAPI | None = None
+        if fastapi_kwargs:
+            self._app = self._create_app(**fastapi_kwargs)
+
+    @property
+    def app(self) -> FastAPI:
+        """Fully configured FastAPI application.
+
+        Only available when FastAPI kwargs were passed to the constructor.
+
+        Raises:
+            RuntimeError: If no FastAPI kwargs were provided.
+        """
+        if self._app is None:
+            raise RuntimeError(
+                "No FastAPI app was created. Pass FastAPI kwargs to "
+                "CrossDocs() to create one, e.g. "
+                "CrossDocs(title='My Docs')"
+            )
+        return self._app
+
+    def _create_app(self, **fastapi_kwargs: Any) -> FastAPI:
+        """Create a fully configured FastAPI app with Inertia wired up."""
+        configure_inertia(
+            vite_entry="app.tsx",
+            ssr_enabled=True,
+            ssr_command="bun static/build/ssr/ssr.js",
+            template_dir="templates",
+            manifest_path="static/build/.vite/manifest.json",
+        )
+
+        fastapi_kwargs.setdefault("lifespan", inertia_lifespan)
+        app = FastAPI(**fastapi_kwargs)
+        app.mount("/static", StaticFiles(directory="static"), name="static")
+        self.mount(app)
+        return app
 
     @property
     def nav(self) -> list[dict]:
