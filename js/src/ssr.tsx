@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/react'
 import createServer from '@inertiajs/react/server'
 import ReactDOMServer from 'react-dom/server'
 import type { DocsAppConfig } from './types'
+import { ComponentsProvider } from './context/ComponentsContext'
 import { ThemeProvider } from './components/ThemeProvider'
 
 /**
@@ -20,7 +21,7 @@ import { ThemeProvider } from './components/ThemeProvider'
  * ```
  */
 export function createDocsServer(config: DocsAppConfig): void {
-  const { pages, title } = config
+  const { pages, title, components } = config
 
   createServer((page) =>
     createInertiaApp({
@@ -36,7 +37,9 @@ export function createDocsServer(config: DocsAppConfig): void {
       },
       setup: ({ App, props }) => (
         <ThemeProvider>
-          <App {...props} />
+          <ComponentsProvider components={components}>
+            <App {...props} />
+          </ComponentsProvider>
         </ThemeProvider>
       ),
     })
