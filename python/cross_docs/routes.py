@@ -192,11 +192,17 @@ class CrossDocs:
         return PlainTextResponse(raw + footer, media_type="text/markdown")
 
     def _add_llms_txt_route(self) -> None:
-        """Add the /llms.txt route."""
-        router = self._router
-        assert router is not None
+        """Add the /llms.txt route at the root, regardless of docs prefix."""
+        assert self._router is not None
 
-        @router.get("/llms.txt", tags=["llms"], include_in_schema=False)
+        # If the router has a prefix (e.g. /docs), wrap it in a root
+        # router so /llms.txt is always served at the site root.
+        if self._router.prefix:
+            root = APIRouter()
+            root.include_router(self._router)
+            self._router = root
+
+        @self._router.get("/llms.txt", tags=["llms"], include_in_schema=False)
         async def llms_txt():
             """Serve llms.txt for AI agent discovery."""
             return PlainTextResponse(self._get_llms_txt(), media_type="text/markdown")
