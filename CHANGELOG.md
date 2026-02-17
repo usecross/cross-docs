@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+0.13.1 - 2026-02-17
+-------------------
+
+Fix SSR command to use pybun instead of bun
+
+- Use `sys.executable -m pybun` for the SSR command so it works in production environments where `bun` is not on PATH
+- Add `pybun>=1.0.0` as a dependency
+
 0.13.0 - 2026-02-17
 -------------------
 

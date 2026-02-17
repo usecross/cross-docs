@@ -191,11 +191,12 @@ toml = [
 
 [[package]]
 name = "cross-docs"
-version = "0.13.0"
+version = "0.13.1"
 source = { editable = "python" }
 dependencies = [
     { name = "cross-inertia" },
     { name = "fastapi" },
+    { name = "pybun" },
 ]
 
 [package.optional-dependencies]
@@ -223,6 +224,7 @@ requires-dist = [
     { name = "cross-inertia", specifier = ">=0.11.0" },
     { name = "fastapi", specifier = ">=0.100.0" },
     { name = "griffe", marker = "extra == 'api'", specifier = ">=1.0" },
+    { name = "pybun", specifier = ">=1.0.0" },
 ]
 provides-extras = ["api", "cli"]
 
@@ -237,7 +239,7 @@ dev = [
 
 [[package]]
 name = "cross-docs-monorepo"
-version = "0.13.0"
+version = "0.13.1"
 source = { virtual = "." }
 
 [package.dev-dependencies]
