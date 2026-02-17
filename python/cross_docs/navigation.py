@@ -1,5 +1,7 @@
 """Navigation generation for cross-docs."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from .markdown import parse_frontmatter
@@ -74,3 +76,41 @@ def generate_nav(
             nav.append({"title": section_name, "items": items})
 
     return nav
+
+
+def generate_llms_txt(
+    nav: list[dict],
+    *,
+    title: str = "Documentation",
+    description: str = "",
+    base_url: str = "",
+) -> str:
+    """Generate llms.txt content from a navigation structure.
+
+    Renders the nav as a markdown index following the llms.txt convention
+    (see https://llmstxt.org/).
+
+    Args:
+        nav: Navigation structure from generate_nav()
+        title: Site/project title for the H1 heading
+        description: Short project description (rendered as blockquote)
+        base_url: Base URL to prepend to hrefs (e.g. "https://example.com")
+
+    Returns:
+        llms.txt content as a string
+    """
+    lines = [f"# {title}", ""]
+
+    if description:
+        lines.append(f"> {description}")
+        lines.append("")
+
+    for section in nav:
+        lines.append(f"## {section['title']}")
+        lines.append("")
+        for item in section.get("items", []):
+            href = f"{base_url}{item['href']}"
+            lines.append(f"- [{item['title']}]({href})")
+        lines.append("")
+
+    return "\n".join(lines)
