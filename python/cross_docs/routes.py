@@ -174,9 +174,11 @@ class CrossDocs:
                 lines.append(f"## {doc_set.name}")
                 lines.append("")
                 for section in nav:
+                    lines.append(f"### {section['title']}")
+                    lines.append("")
                     for item in section.get("items", []):
                         lines.append(f"- [{item['title']}]({item['href']})")
-                lines.append("")
+                    lines.append("")
             return "\n".join(lines)
 
         return generate_llms_txt(
