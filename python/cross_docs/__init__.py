@@ -13,7 +13,7 @@ from cross_docs.config import (
 )
 from cross_docs.markdown import load_markdown, load_raw_markdown, parse_frontmatter
 from cross_docs.middleware import strip_trailing_slash_middleware, wants_markdown
-from cross_docs.navigation import generate_nav
+from cross_docs.navigation import generate_llms_txt, generate_nav
 from cross_docs.routes import CrossDocs
 
 __version__ = "0.13.1"
@@ -32,6 +32,7 @@ __all__ = [
     "load_markdown",
     "load_raw_markdown",
     # Navigation
+    "generate_llms_txt",
     "generate_nav",
     # Middleware
     "strip_trailing_slash_middleware",

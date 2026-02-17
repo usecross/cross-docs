@@ -16,7 +16,7 @@ from cross_inertia.fastapi.experimental import inertia_lifespan
 
 from .markdown import load_markdown, load_raw_markdown
 from .middleware import wants_markdown
-from .navigation import generate_nav
+from .navigation import generate_llms_txt, generate_nav
 
 if TYPE_CHECKING:
     from .config import APIPluginConfig, DocSet, DocsConfig
@@ -150,6 +150,56 @@ class CrossDocs:
             # multi-docs handles this internally for correct route ordering)
             if config.api:
                 self._build_api_routes()
+
+        # Add /llms.txt route if markdown responses are enabled
+        if config.enable_markdown_response:
+            self._add_llms_txt_route()
+
+    def _get_llms_txt(self) -> str:
+        """Generate llms.txt content from current navigation."""
+        config = self.config
+        title = config.home.title or "Documentation"
+        description = config.home.description or ""
+
+        if config.doc_sets and self._nav_by_slug:
+            # Multi-docs: combine all doc set navs
+            lines = [f"# {title}", ""]
+            if description:
+                lines.append(f"> {description}")
+                lines.append("")
+            for doc_set in config.doc_sets:
+                nav = self._nav_by_slug.get(doc_set.slug, [])
+                if not nav:
+                    continue
+                lines.append(f"## {doc_set.name}")
+                lines.append("")
+                for section in nav:
+                    for item in section.get("items", []):
+                        lines.append(f"- [{item['title']}]({item['href']})")
+                lines.append("")
+            return "\n".join(lines)
+
+        return generate_llms_txt(
+            self._nav or [],
+            title=title,
+            description=description,
+        )
+
+    def _markdown_response(self, content_dir: Path, doc_path: str, llms_txt_path: str) -> PlainTextResponse:
+        """Return raw markdown with a footer linking to llms.txt."""
+        raw = load_raw_markdown(content_dir, doc_path)
+        footer = f"\n\n---\n\nFor all available pages, see [{llms_txt_path}]({llms_txt_path})\n"
+        return PlainTextResponse(raw + footer, media_type="text/markdown")
+
+    def _add_llms_txt_route(self) -> None:
+        """Add the /llms.txt route."""
+        router = self._router
+        assert router is not None
+
+        @router.get("/llms.txt", tags=["llms"], include_in_schema=False)
+        async def llms_txt():
+            """Serve llms.txt for AI agent discovery."""
+            return PlainTextResponse(self._get_llms_txt(), media_type="text/markdown")
 
     def _build_single_docs(self) -> None:
         """Build router for single documentation set (original behavior)."""
@@ -329,10 +379,7 @@ class CrossDocs:
 
             # Return raw markdown if requested
             if config.enable_markdown_response and wants_markdown(request):
-                return PlainTextResponse(
-                    load_raw_markdown(content_dir, doc_path),
-                    media_type="text/markdown",
-                )
+                return self._markdown_response(content_dir, doc_path, "/llms.txt")
 
             content = load_markdown(content_dir, doc_path)
             props = {
@@ -384,10 +431,7 @@ class CrossDocs:
 
             # Return raw markdown if requested
             if config.enable_markdown_response and wants_markdown(request):
-                return PlainTextResponse(
-                    load_raw_markdown(content_dir, doc_path),
-                    media_type="text/markdown",
-                )
+                return self._markdown_response(content_dir, doc_path, "/llms.txt")
 
             content = load_markdown(content_dir, doc_path)
             props = {
