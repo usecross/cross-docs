@@ -28,20 +28,14 @@ class CrossDocs:
     pyproject.toml and creates routes for docs and homepage.
 
     Example:
-        # Zero-config (recommended):
         from cross_docs import CrossDocs
 
         docs = CrossDocs(title="My Docs")
         app = docs.app  # FastAPI instance, ready for uvicorn
 
-        # With existing app (backward compatible):
-        from cross_docs import CrossDocs
-
-        docs = CrossDocs()
-        docs.mount(app)
-
         # Override component names:
         docs = CrossDocs(
+            title="My Docs",
             docs_component="custom/DocsPage",
             home_component="custom/HomePage",
         )
@@ -62,9 +56,8 @@ class CrossDocs:
             docs_component: Override the docs page component name.
             home_component: Override the home page component name.
             **fastapi_kwargs: Passed to FastAPI constructor (e.g. title,
-                docs_url, redoc_url). When any kwargs are provided, a
-                fully-configured FastAPI app is created and exposed as
-                ``self.app``.
+                docs_url, redoc_url). Creates a fully-configured FastAPI
+                app accessible via ``self.app``.
         """
         from .config import load_config
 
@@ -91,11 +84,17 @@ class CrossDocs:
     def app(self) -> FastAPI:
         """Fully configured FastAPI application.
 
-        Creates the app on first access if not already created via
-        constructor kwargs.
+        Only available when FastAPI kwargs were passed to the constructor.
+
+        Raises:
+            RuntimeError: If no FastAPI kwargs were provided.
         """
         if self._app is None:
-            self._app = self._create_app()
+            raise RuntimeError(
+                "No FastAPI app was created. Pass FastAPI kwargs to "
+                "CrossDocs() to create one, e.g. "
+                "CrossDocs(title='My Docs')"
+            )
         return self._app
 
     def _create_app(self, **fastapi_kwargs: Any) -> FastAPI:
