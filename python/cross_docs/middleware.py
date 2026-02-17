@@ -30,14 +30,19 @@ async def strip_trailing_slash_middleware(request: Request, call_next):
 def wants_markdown(request: Request) -> bool:
     """Check if the request prefers markdown content.
 
-    Useful for AI tools like Claude Code that request raw markdown
-    via Accept: text/markdown header.
+    Useful for AI tools like Claude Code and ChatGPT that request raw
+    markdown via Accept: text/markdown header or known AI User-Agents.
 
     Args:
         request: FastAPI request
 
     Returns:
-        True if Accept header contains text/markdown
+        True if Accept header contains text/markdown or UA is a known AI agent
     """
     accept = request.headers.get("accept", "")
-    return "text/markdown" in accept
+    user_agent = request.headers.get("user-agent", "")
+    return (
+        "text/markdown" in accept
+        or "Claude-User" in user_agent
+        or "ChatGPT-User" in user_agent
+    )
