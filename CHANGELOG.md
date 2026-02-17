@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.12.1 - 2026-02-17
+-------------------
+
+Return raw markdown responses for AI user agents (Claude-User, ChatGPT-User) without requiring the Accept: text/markdown header.
+
 0.12.0 - 2026-01-11
 -------------------
 
