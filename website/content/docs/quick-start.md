@@ -14,17 +14,12 @@ This guide will help you set up a documentation site with Cross-Docs.
 Set up a FastAPI application with Cross-Docs:
 
 ```python
-from pathlib import Path
-from fastapi import FastAPI
-from cross_docs import create_docs_router
-from cross_inertia.fastapi import InertiaMiddleware
+from cross_docs import CrossDocs
 
+# Creates a fully configured FastAPI app with Inertia wired up
 # Use docs_url to avoid conflict with cross-docs at /docs
-app = FastAPI(docs_url="/api/docs", redoc_url="/api/redoc")
-app.add_middleware(InertiaMiddleware)
-
-# Add docs routes - that's it!
-app.include_router(create_docs_router(Path("content")))
+docs = CrossDocs(title="My Docs", docs_url="/api/docs", redoc_url="/api/redoc")
+app = docs.app
 ```
 
 > **Note:** FastAPI's built-in Swagger UI defaults to `/docs`, which conflicts with cross-docs. Setting `docs_url="/api/docs"` moves it to `/api/docs` instead.

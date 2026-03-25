@@ -23,7 +23,7 @@ classifiers = [
 
 dependencies = [
     "fastapi>=0.100.0",
-    "cross-inertia>=0.11.0",
+    "cross-inertia>=0.17.0",
     "pybun>=1.0.0",
 ]
 
