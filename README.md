@@ -35,17 +35,11 @@ npm install @usecross/docs
 ### 2. Create your backend (FastAPI)
 
 ```python
-from pathlib import Path
-from fastapi import FastAPI
-from cross_docs import create_docs_router, strip_trailing_slash_middleware
-from cross_inertia.fastapi import InertiaMiddleware
+from cross_docs import CrossDocs
 
-app = FastAPI()
-app.add_middleware(InertiaMiddleware)
-app.middleware("http")(strip_trailing_slash_middleware)
-
-# Add docs routes - that's it!
-app.include_router(create_docs_router(Path("content")))
+# Creates a fully configured FastAPI app with Inertia wired up
+docs = CrossDocs(title="My Docs")
+app = docs.app
 ```
 
 ### 3. Create your frontend

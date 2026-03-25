@@ -221,7 +221,7 @@ dev = [
 requires-dist = [
     { name = "click", marker = "extra == 'api'", specifier = ">=8.0" },
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.0" },
-    { name = "cross-inertia", specifier = ">=0.11.0" },
+    { name = "cross-inertia", specifier = ">=0.17.0" },
     { name = "fastapi", specifier = ">=0.100.0" },
     { name = "griffe", marker = "extra == 'api'", specifier = ">=1.0" },
     { name = "pybun", specifier = ">=1.0.0" },
@@ -254,16 +254,16 @@ dev = [{ name = "fastapi", extras = ["standard"], specifier = ">=0.124.0" }]
 
 [[package]]
 name = "cross-inertia"
-version = "0.14.0"
+version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cross-web" },
     { name = "httpx" },
     { name = "itsdangerous" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b8/28/f1f54e38b96f170fffc7987e6b3d1a6082c78118564a1b379654e22cc858/cross_inertia-0.14.0.tar.gz", hash = "sha256:a01b568656969873b1e4a089222c39f73d7b3cd3031d71d765eb2581ea3c110d", size = 2540197, upload-time = "2026-02-03T13:48:29.586Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/84/a1/860de24db58f63bef9863ee38802db5841a850ed5bed6e61fd6501be541f/cross_inertia-0.17.0.tar.gz", hash = "sha256:95833f59200a536b8f0dbd46388fb8cd93bc6497aab8671492aca6b9e644d47b", size = 2553262, upload-time = "2026-03-25T22:37:02.477Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/78/54bc76de6bb4afc4b7c323203b48ca0d8985264a82c42a23370b0411ecaf/cross_inertia-0.14.0-py3-none-any.whl", hash = "sha256:0964ffd05b1da19c6b89c4a4c4f66a00a0cb9bee3cbc8e98fb4a6f9f31186b82", size = 46437, upload-time = "2026-02-03T13:48:31.216Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/56/e61dbfd7b4a1d462c54d300003e0b20c4233c5a2cae48302c292ef3a9050/cross_inertia-0.17.0-py3-none-any.whl", hash = "sha256:6ec74c1300740c64f085aa3584d79170d60701fce22e11fe444dd3e200d85c00", size = 47694, upload-time = "2026-03-25T22:37:01.522Z" },
 ]
 
 [[package]]
@@ -509,6 +509,7 @@ dependencies = [
     { name = "griffecli" },
     { name = "griffelib" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/04/56/28a0accac339c164b52a92c6cfc45a903acc0c174caa5c1713803467b533/griffe-2.0.0.tar.gz", hash = "sha256:c68979cd8395422083a51ea7cf02f9c119d889646d99b7b656ee43725de1b80f", size = 293906, upload-time = "2026-03-23T21:06:53.402Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8b/94/ee21d41e7eb4f823b94603b9d40f86d3c7fde80eacc2c3c71845476dddaa/griffe-2.0.0-py3-none-any.whl", hash = "sha256:5418081135a391c3e6e757a7f3f156f1a1a746cc7b4023868ff7d5e2f9a980aa", size = 5214, upload-time = "2026-02-09T19:09:44.105Z" },
 ]
@@ -521,6 +522,7 @@ dependencies = [
     { name = "colorama" },
     { name = "griffelib" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/a4/f8/2e129fd4a86e52e58eefe664de05e7d502decf766e7316cc9e70fdec3e18/griffecli-2.0.0.tar.gz", hash = "sha256:312fa5ebb4ce6afc786356e2d0ce85b06c1c20d45abc42d74f0cda65e159f6ef", size = 56213, upload-time = "2026-03-23T21:06:54.8Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e6/ed/d93f7a447bbf7a935d8868e9617cbe1cadf9ee9ee6bd275d3040fbf93d60/griffecli-2.0.0-py3-none-any.whl", hash = "sha256:9f7cd9ee9b21d55e91689358978d2385ae65c22f307a63fb3269acf3f21e643d", size = 9345, upload-time = "2026-02-09T19:09:42.554Z" },
 ]
@@ -529,6 +531,7 @@ wheels = [
 name = "griffelib"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ad/06/eccbd311c9e2b3ca45dbc063b93134c57a1ccc7607c5e545264ad092c4a9/griffelib-2.0.0.tar.gz", hash = "sha256:e504d637a089f5cab9b5daf18f7645970509bf4f53eda8d79ed71cce8bd97934", size = 166312, upload-time = "2026-03-23T21:06:55.954Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4d/51/c936033e16d12b627ea334aaaaf42229c37620d0f15593456ab69ab48161/griffelib-2.0.0-py3-none-any.whl", hash = "sha256:01284878c966508b6d6f1dbff9b6fa607bc062d8261c5c7253cb285b06422a7f", size = 142004, upload-time = "2026-02-09T19:09:40.561Z" },
 ]

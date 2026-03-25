@@ -6,7 +6,6 @@ from cross_docs import CrossDocs
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from cross_inertia import configure_inertia
-from cross_inertia.fastapi import InertiaMiddleware
 from cross_inertia.fastapi.experimental import inertia_lifespan
 
 configure_inertia(vite_entry="app.tsx")
@@ -18,8 +17,6 @@ app = FastAPI(
     lifespan=inertia_lifespan,
 )
 
-# Inertia middleware
-app.add_middleware(InertiaMiddleware)
 app.mount(
     "/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static"
 )

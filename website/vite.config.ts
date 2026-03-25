@@ -1,10 +1,10 @@
-import { resolve } from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import inertia from '@inertiajs/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig(({ isSsrBuild, command }) => ({
-  plugins: [tailwindcss(), react()],
+  plugins: [tailwindcss(), react(), inertia()],
   root: 'frontend',
   base: command === 'serve' ? '/' : isSsrBuild ? '/' : '/static/build/',
   resolve: {
@@ -17,7 +17,7 @@ export default defineConfig(({ isSsrBuild, command }) => ({
     emptyOutDir: true,
     manifest: !isSsrBuild,
     rollupOptions: {
-      input: resolve(__dirname, 'frontend', isSsrBuild ? 'ssr.tsx' : 'app.tsx'),
+      input: isSsrBuild ? 'frontend/ssr.tsx' : 'frontend/app.tsx',
     },
   },
   ssr: {
