@@ -369,21 +369,17 @@ class CrossDocs:
                 data["navLinks"] = config.nav_links
             return data
 
-        @self._router.get(f"{route_prefix}/{{path:path}}", tags=["docs"])  # type: ignore
-        async def docs_page(
+        async def render_docs_page(
             path: str,
             request: Request,
             inertia: InertiaDep,
-            _content_subpath: str = content_subpath,
-            _index_page: str = doc_set.index_page,
-            _share_data: Any = share_data,
         ):
             """Serve a docs page by path."""
             path = path.rstrip("/")
             if not path:
-                path = _index_page
+                path = doc_set.index_page
 
-            doc_path = f"{_content_subpath}/{path}"
+            doc_path = f"{content_subpath}/{path}"
 
             # Return raw markdown if requested
             if config.enable_markdown_response and wants_markdown(request):
@@ -392,7 +388,7 @@ class CrossDocs:
             content = load_markdown(content_dir, doc_path)
             props = {
                 "content": content,
-                **_share_data(request),
+                **share_data(request),
             }
 
             return inertia.render(
@@ -400,6 +396,16 @@ class CrossDocs:
                 props,
                 view_data={"page_title": content["title"]},
             )
+
+        @self._router.get(route_prefix, tags=["docs"])  # type: ignore
+        async def docs_index(request: Request, inertia: InertiaDep):
+            """Serve the docs index page without requiring a trailing slash."""
+            return await render_docs_page("", request, inertia)
+
+        @self._router.get(f"{route_prefix}/{{path:path}}", tags=["docs"])  # type: ignore
+        async def docs_page(path: str, request: Request, inertia: InertiaDep):
+            """Serve a docs page by path."""
+            return await render_docs_page(path, request, inertia)
 
     def _create_docs_router(self) -> APIRouter:
         """Create the docs router."""
