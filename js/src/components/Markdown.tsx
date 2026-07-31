@@ -91,7 +91,7 @@ export function Markdown({ content, components }: MarkdownProps) {
           )
         },
         // Custom link styling
-        a({ href, children, node, ...props }) {
+        a({ href, children, node: _node, ...props }) {
           const isExternal = href?.startsWith('http')
           return (
             <a

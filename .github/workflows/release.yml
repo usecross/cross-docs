@@ -18,10 +18,10 @@ jobs:
       has_release: ${{ steps.check.outputs.has_release }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v9
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
@@ -29,7 +29,7 @@ jobs:
       - name: Check for release
         id: check
         run: |
-          if uvx --from autopub==1.0.0a57 --with pygithub --with dunamai --with pydantic --with tomlkit autopub check; then
+          if uvx --from autopub==1.0.0a61 --with pygithub --with dunamai --with pydantic --with tomlkit autopub check; then
             echo "has_release=true" >> $GITHUB_OUTPUT
           else
             echo "has_release=false" >> $GITHUB_OUTPUT
@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload .autopub artifact
         if: steps.check.outputs.has_release == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: autopub-data
           path: .autopub
@@ -57,42 +57,42 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v9
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Setup Node.js for npm OIDC
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Download .autopub artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: autopub-data
           path: .autopub
 
       - name: Prepare release
         run: |
-          uvx --from autopub==1.0.0a57 --with pygithub --with dunamai --with pydantic --with tomlkit autopub prepare
+          uvx --from autopub==1.0.0a61 --with pygithub --with dunamai --with pydantic --with tomlkit autopub prepare
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Build packages
         run: |
-          uvx --from autopub==1.0.0a57 --with pygithub --with dunamai --with pydantic --with tomlkit autopub build
+          uvx --from autopub==1.0.0a61 --with pygithub --with dunamai --with pydantic --with tomlkit autopub build
         env:
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Publish packages
         run: |
-          uvx --from autopub==1.0.0a57 --with pygithub --with dunamai --with pydantic --with tomlkit autopub publish
+          uvx --from autopub==1.0.0a61 --with pygithub --with dunamai --with pydantic --with tomlkit autopub publish
         env:
           PYTHONPATH: ${{ github.workspace }}
           NPM_CONFIG_PROVENANCE: true
