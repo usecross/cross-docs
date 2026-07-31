@@ -1,5 +1,11 @@
 {
   "name": "cross-docs-monorepo",
   "private": true,
-  "workspaces": ["js", "website"]
+  "workspaces": ["js", "website"],
+  "scripts": {
+    "lint": "oxlint --deny-warnings js/src website/frontend"
+  },
+  "devDependencies": {
+    "oxlint": "^1.76.0"
+  }
 }

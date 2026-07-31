@@ -24,10 +24,10 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc --emitDeclarationOnly --noEmit false",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src",
+    "lint": "oxlint --deny-warnings src",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -56,21 +56,21 @@
     "rehype-raw": "^7.0.0",
     "remark-emoji": "^5.0.2",
     "remark-gfm": "^4.0.1",
-    "remark-github-blockquote-alert": "^2.0.1",
-    "shiki": "^1.24.0",
-    "tailwind-merge": "^2.6.0"
+    "remark-github-blockquote-alert": "^2.1.0",
+    "shiki": "^4.4.1",
+    "tailwind-merge": "^3.6.0"
   },
   "peerDependencies": {
-    "@inertiajs/react": "^3.0.0",
-    "@tailwindcss/typography": "^0.5.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.0"
+    "@inertiajs/react": "^3.6.1",
+    "@tailwindcss/typography": "^0.5.20",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "tsup": "^8.3.5",
-    "typescript": "^5.5.3"
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2"
   }
 }

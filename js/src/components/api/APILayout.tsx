@@ -143,7 +143,12 @@ export function APILayout({
       {/* Mobile sidebar */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fixed inset-0 bg-black/50 dark:bg-black/70" onClick={() => setMobileMenuOpen(false)} />
+          <button
+            type="button"
+            aria-label="Close navigation"
+            className="fixed inset-0 bg-black/50 dark:bg-black/70"
+            onClick={() => setMobileMenuOpen(false)}
+          />
           <div
             className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white dark:bg-[#0f0f0f] px-4 py-6 border-r border-gray-200 dark:border-gray-800 transition-colors"
             style={{ paddingTop: headerHeight + 16 }}
