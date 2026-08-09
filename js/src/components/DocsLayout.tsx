@@ -159,11 +159,11 @@ export function DocsLayout({
         <div className="flex">
           {/* Desktop sidebar - fixed width */}
           <aside
-            className="hidden lg:block w-[24rem] shrink-0 border-r border-gray-200 dark:border-gray-800 transition-colors"
+            className="hidden lg:block w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 transition-colors"
             style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
           >
             <nav
-              className="sticky px-4 lg:px-10 py-6 overflow-y-auto"
+              className="sticky px-6 py-6 overflow-y-auto"
               style={{ top: headerHeight, maxHeight: `calc(100vh - ${headerHeight}px)` }}
             >
               <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
