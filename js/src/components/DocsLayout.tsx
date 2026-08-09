@@ -163,7 +163,7 @@ export function DocsLayout({
             style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
           >
             <nav
-              className="sticky px-6 py-6 overflow-y-auto"
+              className="sticky px-4 lg:px-10 py-6 overflow-y-auto"
               style={{ top: headerHeight, maxHeight: `calc(100vh - ${headerHeight}px)` }}
             >
               <Sidebar nav={nav} currentPath={currentPath} docSets={docSets} currentDocSet={currentDocSet} />
