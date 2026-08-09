@@ -159,7 +159,7 @@ export function DocsLayout({
         <div className="flex">
           {/* Desktop sidebar - fixed width */}
           <aside
-            className="hidden lg:block w-[24rem] shrink-0 border-r border-gray-200 dark:border-gray-800 transition-colors"
+            className="hidden lg:block w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 transition-colors"
             style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
           >
             <nav
