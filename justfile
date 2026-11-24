@@ -39,11 +39,6 @@ clean:
     cd website && rm -rf static/build frontend/dist node_modules bun.lockb
     @echo "✅ Clean complete!"
 
-# Deploy to production
-deploy:
-    cd website && bun run build
-    cd website && uv run fastapi deploy
-
 # Internal recipe for running servers
 _run-servers:
     #!/usr/bin/env bash
